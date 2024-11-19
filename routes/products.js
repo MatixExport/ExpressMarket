@@ -1,9 +1,10 @@
 var express = require('express');
-const { getAllProducts } = require('../controllers/ProductController');
+const { getAllProducts, createProduct} = require('../controllers/productController');
+const {addProductValidator} = require('../validators/productValidation')
 var router = express.Router();
 
 
-/* GET users listing. */
 router.get('/', getAllProducts);
+router.post('/create',addProductValidator ,createProduct);
 
 module.exports = router;

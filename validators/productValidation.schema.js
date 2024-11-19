@@ -1,10 +1,10 @@
-import Ajv from 'ajv';
+const {Ajv} =  require('ajv');
 const ajv = new Ajv({
     allErrors: true,
     verbose: true,
 });
-import addFormats from 'ajv-formats';
-import ajvErrors from 'ajv-errors';
+const addFormats = require("ajv-formats")
+const ajvErrors = require('ajv-errors');
 
 addFormats(ajv);
 ajvErrors(ajv);
@@ -25,24 +25,26 @@ const productSchema = {
             maxLength: 500,
         },
         price: {
-            type: 'float32',
+            type: 'number',
             nullable: false,
             minimum: 0,
         },
         weight: {
-            type: 'float32',
+            type: 'number',
             nullable: false,
             minimum: 0.1,
             maximum: 5000,
         },
-        categoryId: {
-            type: 'uint8',
+        CategoryId: {
+            type: 'integer',
             nullable: false,
-            minimum: 0,
+            minimum: 1,
+            maximum: 5
         },
     },
-    required: ['name', 'description', 'price', 'weight', 'categoryId'],
+    required: ['name', 'description', 'price', 'weight', 'CategoryId'],
     additionalProperties: false,
 };
 
-export const validateProduct = ajv.compile(productSchema);
+const validateProduct = ajv.compile(productSchema);
+module.exports = {validateProduct}

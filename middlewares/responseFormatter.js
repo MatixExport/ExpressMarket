@@ -1,16 +1,17 @@
+import {StatusCodes} from 'http-status-codes';
+
 export const responseFormatter = (req, res, next) => {
-    res.success = (data, metadata = {}, links = {}) => {
-      res.status(200).json({
-        status: 'success',
+    res.success = (data,code = StatusCodes.OK, metadata = {}, links = {}) => {
+      res.status(code).json({
         data,
         metadata,
         links
       });
     };
   
-    res.error = (message, code = 400, details = {}) => {
+    res.error = (type,title,message, code = StatusCodes.BAD_REQUEST, details = {}) => {
       res.status(code).json({
-        status: 'error',
+        instance:req.url,
         error: {
           code,
           message,
