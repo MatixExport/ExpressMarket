@@ -1,6 +1,6 @@
-import {StatusCodes} from 'http-status-codes';
+const {StatusCodes} = require('http-status-codes');
 
-export const responseFormatter = (req, res, next) => {
+const responseFormatter = (req, res, next) => {
     res.success = (data,code = StatusCodes.OK, metadata = {}, links = {}) => {
       res.status(code).json({
         data,
@@ -9,7 +9,7 @@ export const responseFormatter = (req, res, next) => {
       });
     };
   
-    res.error = (type,title,message, code = StatusCodes.BAD_REQUEST, details = {}) => {
+    res.error = (message, code = StatusCodes.BAD_REQUEST, details = {}) => {
       res.status(code).json({
         instance:req.url,
         error: {
@@ -25,4 +25,6 @@ export const responseFormatter = (req, res, next) => {
   
     next();
   };
+
+  module.exports = {responseFormatter}
   

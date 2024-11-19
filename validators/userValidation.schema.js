@@ -1,10 +1,10 @@
-import Ajv from 'ajv';
+const {Ajv} =  require('ajv');
 const ajv = new Ajv({
     allErrors: true,
     verbose: true,
 });
-import addFormats from 'ajv-formats';
-import ajvErrors from 'ajv-errors';
+const addFormats = require("ajv-formats")
+const ajvErrors = require('ajv-errors');
 
 addFormats(ajv);
 ajvErrors(ajv);
@@ -47,4 +47,5 @@ const userSchema = {
     additionalProperties: false,
 };
 
-export const validateUser = ajv.compile(userSchema);
+const validateUser = ajv.compile(userSchema);
+module.exports = {validateUser}

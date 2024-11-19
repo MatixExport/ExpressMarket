@@ -1,4 +1,5 @@
-const {Ajv} =  require('ajv');
+//reduce to single Ajv require across whole module
+const {Ajv} = require('ajv');
 const ajv = new Ajv({
     allErrors: true,
     verbose: true,
@@ -45,6 +46,9 @@ const productSchema = {
     required: ['name', 'description', 'price', 'weight', 'CategoryId'],
     additionalProperties: false,
 };
+const productUpdateSchema = {...productSchema};
+productUpdateSchema.required = [];
 
-const validateProduct = ajv.compile(productSchema);
-module.exports = {validateProduct}
+const validateAddProduct = ajv.compile(productSchema);
+const validateUpdateProduct = ajv.compile(productUpdateSchema);
+module.exports = {validateAddProduct,validateUpdateProduct}

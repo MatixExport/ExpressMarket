@@ -1,6 +1,8 @@
-import { addValidator } from './validation';
-import { validateOrder} from './orderValidation.schema';
+const { addValidator } = require('./validation');
+const { validateOrder} = require('./orderValidation.schema');
 
-export const addUserValidator = async (req,res, next) => {
+const addOrderValidator = async (req,res, next) => {
     await addValidator(validateOrder,req,res,next);
 };
+
+module.exports = {addOrderValidator}
