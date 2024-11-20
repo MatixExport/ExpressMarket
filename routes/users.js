@@ -8,12 +8,6 @@ const User = require('../models/User');
 
 const validateUserPkExists = validatePkExists("userId",User);
 
-/* GET users listing. */
-router.post(
-  '/',
-  addUserValidator,
-  registerUser);
-
 router.put(
   '/:userId',
   validateUserPkExists,

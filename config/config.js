@@ -8,7 +8,8 @@ const config = {
     "development": {
         "dialect": "sqlite",
         "storage": "data.sqlite3"
-      }
+      },
+    "SECRET":"gebirtimordechaj"
 }
 
 module.exports = config

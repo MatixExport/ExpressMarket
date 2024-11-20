@@ -15,7 +15,7 @@ const userSchema = {
         login: {
             type: 'string',
             nullable: false,
-            minLength: 4,
+            minLength: 3,
             maxLength: 20,
         },
         password: {
@@ -49,6 +49,13 @@ const userSchema = {
 
 
 
+
+const userLoginSchema = {...userSchema};
+userLoginSchema['required'] = ['login','password'];
+delete userLoginSchema['phone'];
+delete userLoginSchema['email'];
+
+
 const userUpdateSchema = {...userSchema};
 
 const role = {
@@ -61,5 +68,6 @@ userUpdateSchema['required'] = [];
 
 
 const validateUpdateUser = ajv.compile(userUpdateSchema);
+const validateLoginUser = ajv.compile(userLoginSchema);
 const validateUser = ajv.compile(userSchema);
-module.exports = {validateUser,validateUpdateUser}
+module.exports = {validateUser,validateUpdateUser,validateLoginUser}

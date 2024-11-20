@@ -1,8 +1,10 @@
 const User = require("../models/User");
+const {hashPassword,compareHash,createAccessToken,createRefreshToken,isRefreshTokenExpired} = require("../util/authHelper");
 
 
 const registerUser = async (req, res, next)=>{
     const userData = req.body
+    userData.password = await hashPassword(userData.password);
     userData['role'] = "Client";
     try {
         const data = await User.create(userData);
@@ -11,7 +13,6 @@ const registerUser = async (req, res, next)=>{
         return res.error('An error occurred while creating the user');
     }
 } 
-
 const updateUser = async (req, res, next)=>{
     const userData = req.body
     try {

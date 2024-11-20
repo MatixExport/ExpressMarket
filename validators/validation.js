@@ -23,6 +23,10 @@ const validatePkExists = (pkname,repo)=>{
   }
 }
 
+const validateIsOwner = ()=>{
+
+}
+
 
 // (message, code = StatusCodes.BAD_REQUEST, details = {})
 const addValidator = async (validate,req,res, next) => {

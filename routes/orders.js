@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+const  passport  =  require("../middleware/passport");
 const {getOrdersByUserId,getAllOrders,createOrder,updateOrder} = require("../controllers/orderController");
 const {addOrderValidator} = require("../validators/orderValidation");
 const {validatePkExists} = require("../validators/validation");
@@ -17,18 +18,21 @@ router.get(
 
 router.post(
   '/',
+  passport.authenticate(["jwt", "basic"], { session: false }),
   addOrderValidator,
   createOrder
 );
 
 router.get(
   '/:userId',
+  passport.authenticate(["jwt", "basic"], { session: false }),
   validateUserPkExists,
   getOrdersByUserId
 );
 
 router.put(
   '/:orderId',
+  passport.authenticate(["jwt", "basic"], { session: false }),
   validateOrderPkExists,
   updateOrder
 );

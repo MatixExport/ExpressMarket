@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var models = require("./models")
 var {responseFormatter} = require("./middlewares/responseFormatter")
+var passport = require("./middlewares/passport")
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -12,6 +13,9 @@ var productRouter = require('./routes/products');
 var ordersRouter = require('./routes/orders');
 var orderStatusRouter = require('./routes/orderStatus');
 var categoryRouter = require('./routes/category');
+var authRouter = require('./routes/auth');
+
+
 
 var app = express();
 // view engine setup
@@ -24,6 +28,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(responseFormatter);
+app.use(passport.initialize())
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
@@ -31,6 +36,7 @@ app.use('/products', productRouter);
 app.use('/orders', ordersRouter);
 app.use('/status', orderStatusRouter);
 app.use('/categories',categoryRouter);
+app.use('/auth',authRouter);
 
 
 // catch 404 and forward to error handler
