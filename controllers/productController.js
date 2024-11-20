@@ -1,19 +1,17 @@
-const Product = require("../models/Product")
+const Product = require("../models/Product");
 
 
 const getProductById = async (req, res, next)=>{
-  const data = await Product.findByPk(req.params.productId);
+  // const data = await Product.findByPk(req.params.productId);
+  const data = req.pkObj;
   res.success(data);
 } 
 
 const updateProductById = async (req,res,next)=>{
+  console.log("update endpoint");
   const updateData = req.body;
-  const productId = req.params.productId;
   try {
-    const product = await Product.findByPk(productId);
-    if (!product) {
-        res.error(`Product with id ${productId} not found`);
-    }
+    const product = res.pkObj;
     await product.update(updateData);
     res.success(product)
 } catch (error) {

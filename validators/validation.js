@@ -9,6 +9,21 @@ const parseAjvError = (error)=>{
     }
   }
 
+
+const validatePkExists = (pkname,repo)=>{
+  return async (req,res,next)=>{
+    const pk = req.params[pkname];
+    const obj = await repo.findByPk(pk);
+    if (!obj) {
+        const msg = `Record with pk ${pk} not found.`;
+        return res.error(msg);
+    }
+    req.pkObj = obj;
+    next();
+  }
+}
+
+
 // (message, code = StatusCodes.BAD_REQUEST, details = {})
 const addValidator = async (validate,req,res, next) => {
     const isValid = validate(req.body);
@@ -20,5 +35,5 @@ const addValidator = async (validate,req,res, next) => {
     next(); 
 };
 
-module.exports = {addValidator}
+module.exports = {addValidator,validatePkExists}
 

@@ -9,40 +9,54 @@ const ajvErrors = require('ajv-errors');
 addFormats(ajv);
 ajvErrors(ajv);
 
+
+const request = {
+    Products:[
+        {
+            ProductId:1,
+            quantity:5
+        },
+        {
+            ProductId:2,
+            quantity:5
+        },
+    ]
+
+}
+
+
+
+
+
 const orderUnitSchema = {
     type: 'object',
     properties: {
-        orderId: {
-            type: 'uint32',
-            nullable: false,
-            minimum: 0,
-        },
-        productId: {
-            type: 'uint32',
+        ProductId: {
+            type: 'integer',
             nullable: false,
             minimum: 0,
         },
         quantity: {
-            type: 'uint16',
+            type: 'integer',
             nullable: false,
             minimum: 0,
         },
        
     },
-    required: ['orderId', 'productId', 'quanitiy'],
+    required: ['ProductId', 'quantity'],
     additionalProperties: false,
 };
 
 const orderSchema = {
     type: 'object',
     properties: {
-        products:{
+        Products:{
             type:"array",
             items:orderUnitSchema
         }
        
     },
-    required: ['products'],
+    required: ['Products'],
     additionalProperties: false,
 };
 

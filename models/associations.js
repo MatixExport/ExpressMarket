@@ -15,9 +15,13 @@ const setUpAssociations = ()=>{
 
 
     // Many Users to One Role
-    Role.hasMany(User);
-    User.belongsTo(Role);
+    // Role.hasMany(User);
+    // User.belongsTo(Role);
 
+
+    //Many Orders to One User
+    User.hasMany(Order);
+    Order.belongsTo(User);
 
     // Many Orders to One OrderStatus
     OrderStatus.hasMany(Order);

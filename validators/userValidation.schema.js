@@ -37,15 +37,29 @@ const userSchema = {
             minLength: 4,
             maxLength: 20,
         },
-        roleId: {
-            type: 'uint8',
-            nullable: true,
-        }
+        // role: {
+        //     enum: ["Client", "Admin"],
+        //     nullable: false,
+        // }
 
     },
     required: ['login', 'password', 'phone', 'email'],
     additionalProperties: false,
 };
 
+
+
+const userUpdateSchema = {...userSchema};
+
+const role = {
+    enum: ["Client", "Admin"]
+}
+
+userUpdateSchema.properties['role'] = role;
+userUpdateSchema['required'] = [];
+
+
+
+const validateUpdateUser = ajv.compile(userUpdateSchema);
 const validateUser = ajv.compile(userSchema);
-module.exports = {validateUser}
+module.exports = {validateUser,validateUpdateUser}
