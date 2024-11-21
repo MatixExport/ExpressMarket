@@ -46,9 +46,23 @@ const productSchema = {
     required: ['name', 'description', 'price', 'weight', 'CategoryId'],
     additionalProperties: false,
 };
+const bulkProductSchema = {
+    type: 'object',
+    properties: {
+        Products:{
+            type:"array",
+            items:productSchema
+        }
+       
+    },
+    required: ['Products'],
+    additionalProperties: false,
+}
+
 const productUpdateSchema = {...productSchema};
 productUpdateSchema.required = [];
 
 const validateAddProduct = ajv.compile(productSchema);
+const validateBulkAddProduct = ajv.compile(bulkProductSchema);
 const validateUpdateProduct = ajv.compile(productUpdateSchema);
-module.exports = {validateAddProduct,validateUpdateProduct}
+module.exports = {validateAddProduct,validateUpdateProduct,validateBulkAddProduct}

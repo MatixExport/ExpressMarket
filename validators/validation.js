@@ -23,8 +23,17 @@ const validatePkExists = (pkname,repo)=>{
   }
 }
 
-const validateIsOwner = ()=>{
+// const validateIsOwnerOfPkObj = (req,res,next)=>{
+//   if(req.user.id != req.pkObj.UserId)
+// }
 
+const validateHasRole = (role)=>{
+  return (req,res,next)=>{
+    if(req.user.role != role){
+      res.error(`User does not have role ${role}`,code=StatusCodes.UNAUTHORIZED);
+    }
+    next();
+  }
 }
 
 
@@ -39,5 +48,5 @@ const addValidator = async (validate,req,res, next) => {
     next(); 
 };
 
-module.exports = {addValidator,validatePkExists}
+module.exports = {addValidator,validatePkExists,validateHasRole}
 

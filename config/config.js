@@ -9,7 +9,8 @@ const config = {
         "dialect": "sqlite",
         "storage": "data.sqlite3"
       },
-    "SECRET":"gebirtimordechaj"
+    "SECRET":"gebirtimordechaj",
+    "GROQ_AUTH":"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"
 }
 
 module.exports = config

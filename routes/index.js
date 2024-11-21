@@ -2,12 +2,16 @@ var express = require('express');
 var router = express.Router();
 const Category = require("../models/Category")
 const Product = require("../models/Product")
+const  passport  =  require("../middlewares/passport");
+const {createProductsFromList} = require('../controllers/productController');
+const {addBulkProductValidator} = require('../validators/productValidation')
 
 
-/* GET home page. */
-router.get('/', async function(req, res, next) {
-  const jane = await Category.create({ name:"Ufo" });
-  // res.render('index', { title: jane.id});
-});
+router.post(
+  '/init', 
+  //  passport.authenticate(["jwt", "basic"], { session: false }),
+   addBulkProductValidator,
+   createProductsFromList
+);
 
 module.exports = router;

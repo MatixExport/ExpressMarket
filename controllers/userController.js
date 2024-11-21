@@ -1,11 +1,12 @@
 const User = require("../models/User");
-const {hashPassword,compareHash,createAccessToken,createRefreshToken,isRefreshTokenExpired} = require("../util/authHelper");
+const {userRoles} = require("../models/userRoles");
+const {hashPassword} = require("../util/authHelper");
 
 
 const registerUser = async (req, res, next)=>{
     const userData = req.body
     userData.password = await hashPassword(userData.password);
-    userData['role'] = "Client";
+    userData['role'] = userRoles.CLIENT;
     try {
         const data = await User.create(userData);
         return res.success(data);

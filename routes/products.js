@@ -1,5 +1,5 @@
 var express = require('express');
-const { getAllProducts, createProduct,getProductById,updateProductById} = require('../controllers/productController');
+const { getAllProducts, createProduct,getProductById,updateProductById,getProductSeoDescById} = require('../controllers/productController');
 const {addProductValidator,updateProductValidator} = require('../validators/productValidation')
 const {validatePkExists} = require('../validators/validation');
 const Product = require('../models/Product');
@@ -15,6 +15,11 @@ router.get(
     '/:productId',
     validateProductPkExists,
     getProductById);
+
+router.get(
+    '/:productId/seo-description',
+    validateProductPkExists,
+    getProductSeoDescById);
 
 router.put('/:productId',
     validateProductPkExists,
