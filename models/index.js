@@ -6,7 +6,6 @@ const Order = require("./Order");
 const OrderUnit = require("./OrderUnit");
 const {OrderStatus,initOrderStatuses} = require("./OrderStatus");
 const User = require("./User");
-const Role = require("./Role");
 const {hashPassword} = require("../util/authHelper");
 
 async function init() {

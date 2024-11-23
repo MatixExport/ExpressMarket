@@ -18,7 +18,6 @@ const getProductSeoDescById = async (req, res, next)=>{
 }
 
 const updateProductById = async (req,res,next)=>{
-  console.log("update endpoint");
   const updateData = req.body;
   try {
     const product = res.pkObj;

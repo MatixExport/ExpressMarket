@@ -10,22 +10,25 @@ const parseAjvError = (error)=>{
   }
 
 
-const validatePkExists = (pkname,repo)=>{
+const validatePkExists = (pkname,repo,name="pkObj")=>{
   return async (req,res,next)=>{
     const pk = req.params[pkname];
     const obj = await repo.findByPk(pk);
     if (!obj) {
-        const msg = `Record with pk ${pk} not found.`;
+        const msg = `Record with pk ${pk} in not found.`;
         return res.error(msg);
     }
-    req.pkObj = obj;
+    req[name] = obj;
     next();
   }
 }
 
-// const validateIsOwnerOfPkObj = (req,res,next)=>{
-//   if(req.user.id != req.pkObj.UserId)
-// }
+const validateIsOwnerOfPkObj = (req,res,next)=>{
+  if(req.user.id != req.pkObj.UserId){
+    res.error("User must be the owner of object",StatusCodes.UNAUTHORIZED);
+  }
+  next();
+}
 
 const validateHasRole = (role)=>{
   return (req,res,next)=>{
@@ -37,16 +40,14 @@ const validateHasRole = (role)=>{
 }
 
 
-// (message, code = StatusCodes.BAD_REQUEST, details = {})
 const addValidator = async (validate,req,res, next) => {
     const isValid = validate(req.body);
     if (!isValid && validate.errors) { 
         const errors = await validate.errors;
         return res.error(errors.map(parseAjvError));
-        // return res.status(StatusCodes.BAD_REQUEST).json({status: 'errors', code: StatusCodes.BAD_REQUEST,invalid_params:error})
     }
     next(); 
 };
 
-module.exports = {addValidator,validatePkExists,validateHasRole}
+module.exports = {addValidator,validatePkExists,validateHasRole,validateIsOwnerOfPkObj}
 

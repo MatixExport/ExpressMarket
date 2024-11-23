@@ -5,28 +5,11 @@ const ajv = new Ajv({
 });
 const addFormats = require("ajv-formats")
 const ajvErrors = require('ajv-errors');
+const { OrderStatus } = require('../models/OrderStatus');
+const { format } = require('morgan');
 
 addFormats(ajv);
 ajvErrors(ajv);
-
-
-const request = {
-    Products:[
-        {
-            ProductId:1,
-            quantity:5
-        },
-        {
-            ProductId:2,
-            quantity:5
-        },
-    ]
-
-}
-
-
-
-
 
 const orderUnitSchema = {
     type: 'object',
@@ -34,12 +17,12 @@ const orderUnitSchema = {
         ProductId: {
             type: 'integer',
             nullable: false,
-            minimum: 0,
+            minimum: 1,
         },
         quantity: {
             type: 'integer',
             nullable: false,
-            minimum: 0,
+            minimum: 1,
         },
        
     },
@@ -60,6 +43,22 @@ const orderSchema = {
     additionalProperties: false,
 };
 
+const updateOrderSchema = {
+    type:"object",
+    properties:{
+        OrderStatusId:{
+            type:"integer",
+            minimum:1,
+            maximum:4
+        },
+        confirmDate:{
+            type:"string",
+            format:"date"
+        }
+    },
+}
 
-const validateOrder = ajv.compile(orderSchema);
-module.exports = {validateOrder}
+
+const validateAddOrder = ajv.compile(orderSchema);
+const validateUpdateOrder = ajv.compile(updateOrderSchema);
+module.exports = {validateAddOrder,validateUpdateOrder};

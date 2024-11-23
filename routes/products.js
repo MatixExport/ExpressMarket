@@ -1,8 +1,11 @@
 var express = require('express');
+
 const { getAllProducts, createProduct,getProductById,updateProductById,getProductSeoDescById} = require('../controllers/productController');
 const {addProductValidator,updateProductValidator} = require('../validators/productValidation')
-const {validatePkExists} = require('../validators/validation');
+const {validatePkExists,validateHasRole} = require('../validators/validation');
+const  passport  =  require("../middlewares/passport");
 const Product = require('../models/Product');
+const {userRoles} = require('../models/userRoles')
 
 
 const validateProductPkExists = validatePkExists("productId",Product);
@@ -22,6 +25,8 @@ router.get(
     getProductSeoDescById);
 
 router.put('/:productId',
+    passport.authenticate(["jwt"], { session: false }),
+    validateHasRole(userRoles.EMPLOYEE),
     validateProductPkExists,
     updateProductValidator,
     updateProductById);

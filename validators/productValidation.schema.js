@@ -59,6 +59,7 @@ const bulkProductSchema = {
     additionalProperties: false,
 }
 
+
 const productUpdateSchema = {...productSchema};
 productUpdateSchema.required = [];
 
