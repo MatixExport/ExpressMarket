@@ -13,14 +13,14 @@ ajvErrors(ajv);
 const tokenSchema = {
     type: 'object',
     properties: {
-        refreshToken: {
+        refresh: {
             type: 'string',
             nullable: false,
             minLength: 4,
             maxLength: 80,
         },
     },
-    required: ['refreshToken'],
+    required: ['refresh'],
     additionalProperties: false,
 };
 

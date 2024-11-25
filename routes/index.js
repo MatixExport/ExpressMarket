@@ -9,7 +9,7 @@ const {addBulkProductValidator} = require('../validators/productValidation')
 
 router.post(
   '/init', 
-  //  passport.authenticate(["jwt", "basic"], { session: false }),
+   passport.authenticate(["jwt"], { session: false }),
    addBulkProductValidator,
    createProductsFromList
 );

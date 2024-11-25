@@ -2,19 +2,21 @@
 
 const User = require("../models/User");
 const RefreshToken = require("../models/RefreshToken");
-const {compareHash,createAccessToken,createRefreshToken,isRefreshTokenExpired} = require("../util/authHelper");
+const {compareHash,createAccessToken,createRefreshToken,isRefreshTokenExpired,hashPassword} = require("../util/authHelper");
+const {userRoles} = require("../models/userRoles");
 
 
 
 const login = async (req,res,next)=>{
     const {login,password} = req.body;
-    const user = await User.findOne({ login:login });
+    const user = await User.findOne({where:{ login:login }});
 
     if(!user){
-        res.error(`User ${login} does not exist.`)
+        return res.error(`User ${login} does not exist.`)
     }
+   
     if(!await compareHash(password,user.password)){
-        res.error(`Provided password is incorrect.`)
+        return res.error(`Provided password is incorrect.`)
     }
     const payload = {
         login:user.login,
@@ -25,12 +27,12 @@ const login = async (req,res,next)=>{
 
     return res.success({
         access:accessToken,
-        refreshToken:refreshToken
+        refresh:refreshToken
     });
 }
 
 const refreshToken = async (req,res,next)=>{
-    const { refreshToken:refreshTokenUUID } = req.body; 
+    const { refresh:refreshTokenUUID } = req.body; 
     const refreshToken = await RefreshToken.findOne(
         {
            where:{token: refreshTokenUUID},
@@ -38,7 +40,7 @@ const refreshToken = async (req,res,next)=>{
         }
     );
     if(!refreshToken){
-        res.error("Invalid token");
+        return res.error("Invalid token");
     }
     if(isRefreshTokenExpired(refreshToken)){
         await RefreshToken.destroy();
@@ -53,4 +55,23 @@ const refreshToken = async (req,res,next)=>{
     return res.success({access:refreshedAccessToken});
 }
 
-module.exports = {login,refreshToken}
+
+const registerUser = async (req, res, next)=>{
+    const userData = req.body
+    userData.password = await hashPassword(userData.password);
+    userData['role'] = userRoles.CLIENT;
+
+    if(await User.findOne({where:{login:req.body.login}})){
+        return res.error(`This username is already taken. `);
+    }
+
+    try {
+        const data = await User.create(userData);
+        data['password'] = null;
+        return res.success(data);
+    } catch (error) {
+        return res.error('An error occurred while creating the user');
+    }
+} 
+
+module.exports = {login,refreshToken,registerUser}

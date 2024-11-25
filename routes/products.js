@@ -13,7 +13,12 @@ const validateProductPkExists = validatePkExists("productId",Product);
 var router = express.Router();
 
 router.get('/', getAllProducts);
-router.post('/',addProductValidator ,createProduct);
+router.post('/',
+    passport.authenticate(["jwt"], { session: false }),
+    validateHasRole(userRoles.EMPLOYEE),
+    addProductValidator,
+    createProduct);
+    
 router.get(
     '/:productId',
     validateProductPkExists,

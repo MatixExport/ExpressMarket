@@ -59,7 +59,7 @@ delete userLoginSchema['email'];
 const userUpdateSchema = {...userSchema};
 
 const role = {
-    enum: ["Client", "Admin"]
+    enum: ["client", "employee"]
 }
 
 userUpdateSchema.properties['role'] = role;

@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const  passport  =  require("../middlewares/passport");
-const {getOrdersByUserId,getAllOrders,createOrder,updateOrder,addOrderReview,cancelOrder,confirmOrder} = require("../controllers/orderController");
+const {getOrdersByUserId,getAllOrders,createOrder,updateOrder,addOrderReview,cancelOrder,confirmOrder,getOrderById,getUserOrders} = require("../controllers/orderController");
 const {addOrderValidator,updateOrderValidator} = require("../validators/orderValidation");
 const {addOrderReviewValidator} = require("../validators/orderReviewValidation");
 const {validatePkExists,validateIsOwnerOfPkObj,validateHasRole} = require("../validators/validation");
@@ -25,6 +25,13 @@ router.post(
   addOrderValidator,
   createOrder
 );
+
+router.get(
+  '/user',
+  passport.authenticate(["jwt"], { session: false }),
+  getUserOrders
+);
+
 
 router.post(
   '/:orderId/review',
@@ -51,12 +58,24 @@ router.post(
   cancelOrder
 );
 
+
 router.get(
-  '/:userId',
+  '/:orderId',
   passport.authenticate(["jwt"], { session: false }),
+  validateHasRole(userRoles.EMPLOYEE),
+  validateOrderPkExists,
+  getOrderById
+)
+
+router.get(
+  '/user/:userId',
+  passport.authenticate(["jwt"], { session: false }),
+  validateHasRole(userRoles.EMPLOYEE),
   validateUserPkExists,
   getOrdersByUserId
 );
+
+
 
 router.put(
   '/:orderId',

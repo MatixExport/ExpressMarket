@@ -11,6 +11,11 @@ const getOrdersByUserId = async (req, res, next)=>{
    return res.success(orders);
 } 
 
+const getOrderById = async (req,res,next)=>{
+    const order = await Order.findByPk(req.pkObj.id,{include:[Product,OrderReview]})
+    return res.success(order);
+}
+
 const getUserOrders = async (req,res,next)=>{
     const orders = await Order.findAll({where:{UserId:req.user.id},include:[Product,OrderReview]});
     return res.success(orders);
@@ -20,10 +25,11 @@ const createOrder = async (req, res, next)=>{
     const orderData = req.body;
     orderData['OrderStatusId'] = orderStatuses.UNAPRROVED;
     orderData['confirmDate'] = null;
-    orderData['UserId'] = 1;
+    orderData['UserId'] = req.user.id;
 
     const order = await Order.create(orderData);
     orderData["Products"].forEach(async element => {
+        element['OrderId'] = order.id;
         await OrderUnit.create(element);
     });
     return res.success(order);
@@ -31,35 +37,37 @@ const createOrder = async (req, res, next)=>{
 
 const updateOrder = async (req,res,next)=>{
     const updateData = req.body;
+    const order = req.pkObj;
     try {
-        const order = res.pkObj;
         await order.update(updateData);
-        res.success(order)
+        return res.success(order)
     } catch (error) {
-        res.error('An error occurred while updating the order');
+        return res.error('An error occurred while updating the order');
     }
 }
 
 const confirmOrder = async (req,res,next)=>{
     const order = req.pkObj;
-    if(order.orderStatusId != orderStatuses.APPROVED){
-        res.error("Order status must be marked as approved",code=StatusCodes.CONFLICT);
+    // console.log("orderStatudId: "+order.orderStatusId)
+    if(order.OrderStatusId != orderStatuses.APPROVED){
+        return res.error("Order status must be marked as approved",code=StatusCodes.CONFLICT);
     }
     const updateData = {
         confirmDate:new Date().toISOString(),
         OrderStatusId:orderStatuses.COMPLETED
     };
     await order.update(updateData);
-    res.success({});
+    return res.success({});
 }
 
 const cancelOrder = async (req,res,next)=>{
     const order = req.pkObj;
-    if(order.orderStatusId == orderStatuses.CANCELED){
-        res.error("Order already canceled",code=StatusCodes.CONFLICT);
+    if(order.OrderStatusId == orderStatuses.CANCELED){
+        return res.error("Order already canceled",code=StatusCodes.CONFLICT);
     }
+
     await order.update({OrderStatusId:orderStatuses.CANCELED});
-    res.success({});
+    return res.success({});
 
 }
 
@@ -67,7 +75,8 @@ const addOrderReview = async(req,res,next)=>{
     const order = req.pkObj;
     const orderReviewData = req.body;
     orderReviewData['OrderId'] = order.id;
-    OrderReview.create(orderReviewData);
+    const review = await OrderReview.create(orderReviewData);
+    return res.success(review);
 }
 
 const getAllOrders = async (req, res, next)=>{
@@ -75,5 +84,5 @@ const getAllOrders = async (req, res, next)=>{
  } 
 
 module.exports = {getOrdersByUserId,getAllOrders,createOrder,updateOrder,addOrderReview,getUserOrders,
-    confirmOrder,cancelOrder
+    confirmOrder,cancelOrder,getOrderById
 }
