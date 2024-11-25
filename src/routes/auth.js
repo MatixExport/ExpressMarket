@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
 const {login,refreshToken,registerUser} = require("../controllers/authController");
-const {addUserValidator,validateLogin} = require('../validators/userValidation')
-const {refreshTokenValidator} = require('../validators/refreshTokenValidation')
+const {addUserValidator,validateLogin} = require('../middlewares/validators/userValidation')
+const {refreshTokenValidator} = require('../middlewares/validators/refreshTokenValidation')
 
 
 router.post(

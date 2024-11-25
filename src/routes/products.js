@@ -1,8 +1,8 @@
 var express = require('express');
 
 const { getAllProducts, createProduct,getProductById,updateProductById,getProductSeoDescById} = require('../controllers/productController');
-const {addProductValidator,updateProductValidator} = require('../validators/productValidation')
-const {validatePkExists,validateHasRole} = require('../validators/validation');
+const {addProductValidator,updateProductValidator} = require('../middlewares/validators/productValidation')
+const {validatePkExists,validateHasRole} = require('../middlewares/validators/validation');
 const  passport  =  require("../middlewares/passport");
 const Product = require('../models/Product');
 const {userRoles} = require('../models/userRoles')
