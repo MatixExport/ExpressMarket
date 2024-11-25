@@ -10,21 +10,6 @@ addFormats(ajv);
 ajvErrors(ajv);
 
 
-// const request = {
-//     Products:[
-//         {
-//             ProductId:1,
-//             quantity:5
-//         },
-//         {
-//             ProductId:2,
-//             quantity:5
-//         },
-//     ]
-
-// }
-
-
 const orderReviewSchema = {
     type: 'object',
     properties: {
