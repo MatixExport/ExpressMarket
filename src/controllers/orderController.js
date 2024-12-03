@@ -24,13 +24,14 @@ const getUserOrders = async (req,res,next)=>{
 const createOrder = async (req, res, next)=>{
     const orderData = req.body;
 
-    orderData["Products"].forEach(async element => {
-        if(!await Product.findByPk(element.ProductId)){
+    let i = 0
+    while(i < orderData["Products"].length){
+        if(await Product.findByPk(orderData['Products'][i].ProductId)){
             return res.error("Product with provided id does not exist",StatusCodes.NOT_FOUND);
         }
-    });
-
-
+        i++;
+    }
+    
     orderData['OrderStatusId'] = orderStatuses.UNAPRROVED;
     orderData['confirmDate'] = null;
     orderData['UserId'] = req.user.id;

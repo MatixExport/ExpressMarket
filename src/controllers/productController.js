@@ -5,7 +5,7 @@ const {getSeoDescFromGroq} = require("../lookup/lookup")
 
 const getProductById = async (req, res, next)=>{
   const data = req.pkObj;
-  res.success(data);
+  return res.success(data);
 } 
 
 const getProductSeoDescById = async (req, res, next)=>{
