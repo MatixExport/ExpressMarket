@@ -23,6 +23,14 @@ const getUserOrders = async (req,res,next)=>{
 
 const createOrder = async (req, res, next)=>{
     const orderData = req.body;
+
+    orderData["Products"].forEach(async element => {
+        if(!await Product.findByPk(element.ProductId)){
+            return res.error("Product with provided id does not exist",StatusCodes.NOT_FOUND);
+        }
+    });
+
+
     orderData['OrderStatusId'] = orderStatuses.UNAPRROVED;
     orderData['confirmDate'] = null;
     orderData['UserId'] = req.user.id;
@@ -64,6 +72,9 @@ const cancelOrder = async (req,res,next)=>{
     const order = req.pkObj;
     if(order.OrderStatusId == orderStatuses.CANCELED){
         return res.error("Order already canceled",code=StatusCodes.CONFLICT);
+    }
+    if(order.OrderStatusId == orderStatuses.COMPLETED){
+        return res.error("Order already completed",code=StatusCodes.CONFLICT);
     }
 
     await order.update({OrderStatusId:orderStatuses.CANCELED});

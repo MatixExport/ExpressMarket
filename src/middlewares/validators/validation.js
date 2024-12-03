@@ -25,7 +25,7 @@ const validatePkExists = (pkname,repo,name="pkObj")=>{
 
 const validateIsOwnerOfPkObj = (req,res,next)=>{
   if(req.user.id != req.pkObj.UserId){
-    return res.error("User must be the owner of object",StatusCodes.UNAUTHORIZED);
+    return res.error("User must be the owner of object",StatusCodes.FORBIDDEN);
   }
   next();
 }
@@ -33,7 +33,7 @@ const validateIsOwnerOfPkObj = (req,res,next)=>{
 const validateHasRole = (role)=>{
   return (req,res,next)=>{
     if(req.user.role != role){
-      return res.error(`User does not have role ${role}`,code=StatusCodes.UNAUTHORIZED);
+      return res.error(`User does not have role ${role}`,code=StatusCodes.FORBIDDEN);
     }
     next();
   }
@@ -46,7 +46,7 @@ const validateIsUserOrHasRole = (role)=>{
             next();
         }
         else{
-            return res.error("Users without specific roles can only edit their own accounts",StatusCodes.UNAUTHORIZED);
+            return res.error("Users without specific roles can only edit their own accounts",StatusCodes.FORBIDDEN);
         }
     }
 }

@@ -12,7 +12,7 @@ const getProductSeoDescById = async (req, res, next)=>{
   const product = req.pkObj;
   const {status,body} = await getSeoDescFromGroq(product);
   return res.success(
-    `<meta name=\"description\" content=\"${body.choices[0].message.content}\">`
+    `${body.choices[0].message.content}`
     );
 }
 
