@@ -36,8 +36,7 @@ const getAllProducts = async (req, res, next)=>{
 const createProduct = async (req, res, next)=>{
   const productData = req.body
   const product = await Product.create(productData)
-  return res.success(data);
-
+  return res.success(product);
 } 
 
 const createProductsFromList = async (req,res,next)=>{

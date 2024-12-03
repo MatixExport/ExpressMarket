@@ -27,8 +27,7 @@ const userSchema = {
         phone: {
             type: 'string',
             nullable: false,
-            minLength: 10,
-            maxLength: 10,
+            pattern: "^[0-9]{9}$",
         },
         email: {
             type: 'string',

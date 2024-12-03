@@ -4,7 +4,7 @@ const Category = require("./Category");
 const Product = require("./Product");
 const Order = require("./Order");
 const OrderUnit = require("./OrderUnit");
-const {OrderStatus,initOrderStatuses} = require("./OrderStatus");
+const {initOrderStatuses} = require("./OrderStatusInit");
 const User = require("./User");
 const {hashPassword} = require("../util/authHelper");
 
@@ -13,7 +13,7 @@ async function init() {
     await sequelize.sync({ force: true });
     
     await initOrderStatuses();
-    if((await Category.findAll()).length == 0){
+    if((await Category.findAll()).length === 0){
         await Category.create({ name:"Category1" });
         await Category.create({ name:"Category2" });
         await Category.create({ name:"Category3" });

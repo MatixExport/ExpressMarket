@@ -2,7 +2,8 @@ const Order = require("../models/Order");
 const OrderUnit = require("../models/OrderUnit");
 const OrderReview = require("../models/OrderReview");
 const {StatusCodes} = require('http-status-codes');
-const {orderStatuses, OrderStatus} = require("../models/OrderStatus")
+const {OrderStatus} = require("../models/OrderStatus")
+const orderStatuses = require("../models/OrderStatusInit")
 const Product = require("../models/Product");
 const User = require("../models/User");
 const { or } = require("sequelize");
@@ -52,7 +53,7 @@ const createOrder = async (req, res, next)=>{
         i++;
     }
     
-    orderData['OrderStatusId'] = orderStatuses.UNAPRROVED;
+    orderData['OrderStatusId'] = orderStatuses.UNAPPROVED;
     orderData['confirmDate'] = null;
     orderData['UserId'] = req.user.id;
 
@@ -88,7 +89,7 @@ const updateOrder = async (req,res,next)=>{
 
 const confirmOrder = async (req,res,next)=>{
     const order = req.pkObj;
-    if(order.OrderStatusId != orderStatuses.APPROVED){
+    if(order.OrderStatusId !== orderStatuses.APPROVED){
         return res.error("Order status must be marked as approved",code=StatusCodes.CONFLICT);
     }
     const updateData = {
@@ -101,10 +102,10 @@ const confirmOrder = async (req,res,next)=>{
 
 const cancelOrder = async (req,res,next)=>{
     const order = req.pkObj;
-    if(order.OrderStatusId == orderStatuses.CANCELED){
+    if(order.OrderStatusId === orderStatuses.CANCELED){
         return res.error("Order already canceled",code=StatusCodes.CONFLICT);
     }
-    if(order.OrderStatusId == orderStatuses.COMPLETED){
+    if(order.OrderStatusId === orderStatuses.COMPLETED){
         return res.error("Order already completed",code=StatusCodes.CONFLICT);
     }
 
@@ -116,7 +117,7 @@ const cancelOrder = async (req,res,next)=>{
 const addOrderReview = async(req,res,next)=>{
     const order = req.pkObj;
 
-    if((order.OrderStatusId != orderStatuses.CANCELED)&&(order.OrderStatusId != orderStatuses.COMPLETED)){
+    if((order.OrderStatusId !== orderStatuses.CANCELED)&&(order.OrderStatusId !== orderStatuses.COMPLETED)){
         return res.error("Reviews can only be added to orders that are completed or canceled",code=StatusCodes.CONFLICT);
     }
 
