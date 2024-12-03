@@ -16,7 +16,7 @@ const getProductSeoDescById = async (req, res, next)=>{
         `${body.choices[0].message.content}`
     );
   }
-  return  res.error("groq unavailable");
+  return  res.error("groq unavailable", code = StatusCodes.FAILED_DEPENDENCY);
 
 }
 
