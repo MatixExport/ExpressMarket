@@ -5,6 +5,8 @@ const {StatusCodes} = require('http-status-codes');
 const {orderStatuses, OrderStatus} = require("../models/OrderStatus")
 const Product = require("../models/Product");
 const User = require("../models/User");
+const { or } = require("sequelize");
+const { sequelize } = require('../config/sequelize');
 
 const getOrdersByUserId = async (req, res, next)=>{
    const user = req.pkObj;
@@ -54,12 +56,23 @@ const createOrder = async (req, res, next)=>{
     orderData['confirmDate'] = null;
     orderData['UserId'] = req.user.id;
 
-    const order = await Order.create(orderData);
-    orderData["Products"].forEach(async element => {
-        element['OrderId'] = order.id;
-        await OrderUnit.create(element);
-    });
-    return res.success(order);
+    try {
+        const order2 = await sequelize.transaction(async t => {
+            const order = await Order.create(orderData,{ transaction: t });
+            for (const element of orderData["Products"]) {
+                element["OrderId"] = order.id;
+                await OrderUnit.create(element, { transaction: t });
+            }
+            return order;
+            });
+
+        return res.success(order2);
+        
+      } catch (error) {
+        console.log(error)
+        return res.error("Product with provided id was removed between query and execution",StatusCodes.CONFLICT);
+      }
+
  } 
 
 const updateOrder = async (req,res,next)=>{
