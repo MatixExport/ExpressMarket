@@ -1,17 +1,18 @@
 var express = require('express');
 var router = express.Router();
 const  passport  =  require("../middlewares/passport");
-const {getOrdersByUserId,getAllOrders,createOrder,updateOrder,addOrderReview,cancelOrder,confirmOrder,getOrderById,getUserOrders} = require("../controllers/orderController");
+const {getOrdersByUserId,getAllOrders,createOrder,updateOrder,addOrderReview,cancelOrder,confirmOrder,getOrderById,getUserOrders, getOrdersByOrderStatus, getOrdersByUserLogin,} = require("../controllers/orderController");
 const {addOrderValidator,updateOrderValidator} = require("../middlewares/validators/orderValidation");
 const {addOrderReviewValidator} = require("../middlewares/validators/orderReviewValidation");
 const {validatePkExists,validateIsOwnerOfPkObj,validateHasRole} = require("../middlewares/validators/validation");
 const {userRoles} = require("../models/userRoles");
 const User = require('../models/User');
 const Order = require('../models/Order');
+const { OrderStatus } = require('../models/OrderStatus');
 
 const validateUserPkExists = validatePkExists("userId",User);
 const validateOrderPkExists = validatePkExists("orderId",Order);
-
+const validateOrderStatusPkExists = validatePkExists("statusId",OrderStatus);
 
 
 router.get(
@@ -58,6 +59,20 @@ router.post(
   cancelOrder
 );
 
+router.get(
+  '/status/:statusId',
+  passport.authenticate(["jwt"], { session: false }),
+  validateHasRole(userRoles.EMPLOYEE),
+  validateOrderStatusPkExists,
+  getOrdersByOrderStatus
+)
+
+router.get(
+  '/login/:login',
+  passport.authenticate(["jwt"], { session: false }),
+  validateHasRole(userRoles.EMPLOYEE),
+  getOrdersByUserLogin
+)
 
 router.get(
   '/:orderId',

@@ -2,8 +2,9 @@ const Order = require("../models/Order");
 const OrderUnit = require("../models/OrderUnit");
 const OrderReview = require("../models/OrderReview");
 const {StatusCodes} = require('http-status-codes');
-const {orderStatuses} = require("../models/OrderStatus")
+const {orderStatuses, OrderStatus} = require("../models/OrderStatus")
 const Product = require("../models/Product");
+const User = require("../models/User");
 
 const getOrdersByUserId = async (req, res, next)=>{
    const user = req.pkObj;
@@ -11,13 +12,30 @@ const getOrdersByUserId = async (req, res, next)=>{
    return res.success(orders);
 } 
 
+const getOrdersByUserLogin = async (req, res, next)=>{
+    const username = req.params["login"];
+    const user = await User.findOne({where:{login:username}});
+    if(!user){
+        return res.error("User with specified login those not exist",StatusCodes.NOT_FOUND);
+    }
+    const orders = await Order.findAll({where:{UserId:user.id},include:[Product,OrderReview,OrderStatus]});
+    return res.success(orders);
+ } 
+
+
+const getOrdersByOrderStatus = async (req, res, next)=>{
+    const orderStatus = req.pkObj;
+    const orders = await Order.findAll({where:{OrderStatusId:orderStatus.id},include:[Product,OrderReview,OrderStatus]});
+    return res.success(orders);
+ } 
+
 const getOrderById = async (req,res,next)=>{
     const order = await Order.findByPk(req.pkObj.id,{include:[Product,OrderReview]})
     return res.success(order);
 }
 
 const getUserOrders = async (req,res,next)=>{
-    const orders = await Order.findAll({where:{UserId:req.user.id},include:[Product,OrderReview]});
+    const orders = await Order.findAll({where:{UserId:req.user.id},include:[Product,OrderReview,OrderStatus]});
     return res.success(orders);
 }
 
@@ -26,7 +44,7 @@ const createOrder = async (req, res, next)=>{
 
     let i = 0
     while(i < orderData["Products"].length){
-        if(await Product.findByPk(orderData['Products'][i].ProductId)){
+        if(!await Product.findByPk(orderData['Products'][i].ProductId)){
             return res.error("Product with provided id does not exist",StatusCodes.NOT_FOUND);
         }
         i++;
@@ -57,7 +75,6 @@ const updateOrder = async (req,res,next)=>{
 
 const confirmOrder = async (req,res,next)=>{
     const order = req.pkObj;
-    // console.log("orderStatudId: "+order.orderStatusId)
     if(order.OrderStatusId != orderStatuses.APPROVED){
         return res.error("Order status must be marked as approved",code=StatusCodes.CONFLICT);
     }
@@ -85,10 +102,19 @@ const cancelOrder = async (req,res,next)=>{
 
 const addOrderReview = async(req,res,next)=>{
     const order = req.pkObj;
+
+    if((order.OrderStatusId != orderStatuses.CANCELED)&&(order.OrderStatusId != orderStatuses.COMPLETED)){
+        return res.error("Reviews can only be added to orders that are completed or canceled",code=StatusCodes.CONFLICT);
+    }
+
+    if(await OrderReview.findOne({where:{OrderId:order.id}})){
+        return res.error("Review already exists",code=StatusCodes.CONFLICT);
+    }
+
     const orderReviewData = req.body;
     orderReviewData['OrderId'] = order.id;
     const review = await OrderReview.create(orderReviewData);
-    return res.success(review);
+    return res.success(review,StatusCodes.CREATED);
 }
 
 const getAllOrders = async (req, res, next)=>{
@@ -96,5 +122,5 @@ const getAllOrders = async (req, res, next)=>{
  } 
 
 module.exports = {getOrdersByUserId,getAllOrders,createOrder,updateOrder,addOrderReview,getUserOrders,
-    confirmOrder,cancelOrder,getOrderById
+    confirmOrder,cancelOrder,getOrderById,getOrdersByUserLogin,getOrdersByOrderStatus
 }

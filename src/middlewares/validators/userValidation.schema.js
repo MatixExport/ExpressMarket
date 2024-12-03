@@ -37,10 +37,6 @@ const userSchema = {
             minLength: 4,
             maxLength: 20,
         },
-        // role: {
-        //     enum: ["Client", "Admin"],
-        //     nullable: false,
-        // }
 
     },
     required: ['login', 'password', 'phone', 'email'],

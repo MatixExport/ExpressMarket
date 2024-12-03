@@ -17,6 +17,7 @@ const orderReviewSchema = {
             type: 'integer',
             nullable: false,
             minimum: 1,
+            maximum: 5
         },
         review:{
             type:'string',
