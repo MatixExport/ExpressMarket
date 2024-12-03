@@ -11,9 +11,13 @@ const getProductById = async (req, res, next)=>{
 const getProductSeoDescById = async (req, res, next)=>{
   const product = req.pkObj;
   const {status,body} = await getSeoDescFromGroq(product);
-  return res.success(
-    `${body.choices[0].message.content}`
+  if(status <= 300){
+    return res.success(
+        `${body.choices[0].message.content}`
     );
+  }
+  return  res.error("groq unavailable");
+
 }
 
 const updateProductById = async (req,res,next)=>{
