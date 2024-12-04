@@ -1,22 +1,19 @@
 {
 	"info": {
-		"_postman_id": "02ff3f5c-2049-4713-b083-4e4b90de6d86",
+		"_postman_id": "99027b1a-ed51-4b8d-b149-0b288fd0f514",
 		"name": "ExpressMarket",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "17159133"
+		"_exporter_id": "40023139"
 	},
 	"item": [
 		{
-			"name": "Register",
+			"name": "Bulk add products",
 			"request": {
-				"auth": {
-					"type": "noauth"
-				},
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"login\":\"janek12\",\r\n    \"password\":\"k12345678\",\r\n    \"phone\":\"1234567899\",\r\n    \"email\":\"panie.janex@onet.pl\"\r\n}",
+					"raw": "{\r\n    \"Products\":[\r\n        {\r\n        \"name\": \"P1-bulk\",\r\n        \"description\": \"P1-bulk DESC\",\r\n        \"price\": 12.2,\r\n        \"weight\": 5,\r\n        \"CategoryId\": 1\r\n        },\r\n        {\r\n        \"name\": \"P2-bulk\",\r\n        \"description\": \"P2-bulk DESC\",\r\n        \"price\": 12.2,\r\n        \"weight\": 5,\r\n        \"CategoryId\": 1\r\n        },\r\n        {\r\n        \"name\": \"P3-bulk\",\r\n        \"description\": \"P3-bulk DESC\",\r\n        \"price\": 12.2,\r\n        \"weight\": 5,\r\n        \"CategoryId\": 1\r\n        }\r\n    ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -24,14 +21,713 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:3000/auth/register",
+					"raw": "localhost:3000/init",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
-						"auth",
-						"register"
+						"init"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update User",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "secret",
+							"value": "gebirtimordechaj",
+							"type": "string"
+						},
+						{
+							"key": "payload",
+							"value": "{\r\n    \"login\":\"root\",\r\n    \"id\":2\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "{}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"login\":\"janek120\",\r\n    \"password\":\"k12345678\",\r\n    \"phone\":\"123456789\",\r\n    \"email\":\"panie.janex@onet.pl\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/users/2",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"users",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all products",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/products/",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"products",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Product",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "secret",
+							"value": "gebirtimordechaj",
+							"type": "string"
+						},
+						{
+							"key": "payload",
+							"value": "{\r\n    \"login\":\"root\",\r\n    \"id\":2\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "{}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"New product\",\r\n    \"description\": \"The best bottle of water\",\r\n    \"price\": 15,\r\n    \"weight\": 6,\r\n    \"CategoryId\": 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/products/",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"products",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Product - invalid",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "secret",
+							"value": "gebirtimordechaj",
+							"type": "string"
+						},
+						{
+							"key": "payload",
+							"value": "{\r\n    \"login\":\"root\",\r\n    \"id\":2\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "{}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"\",\r\n    \"description\": \"\",\r\n    \"price\": -10,\r\n    \"weight\": 0,\r\n    \"CategoryId\": 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/products/",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"products",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Product by id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/products/3",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"products",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Product seo-desc",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/products/3/seo-description",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"products",
+						"3",
+						"seo-description"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Product",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"P1-Updated-2\",\r\n    \"description\": \"P1-Updated desc\",\r\n    \"price\": 15,\r\n    \"weight\": 6,\r\n    \"CategoryId\": 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/products/1",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"products",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Product - invalid id",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"P1-Updated-2\",\r\n    \"description\": \"P1-Updated desc\",\r\n    \"price\": 15,\r\n    \"weight\": 6,\r\n    \"CategoryId\": 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/products/100",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"products",
+						"100"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Product - invalid",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"\",\r\n    \"description\": \"\",\r\n    \"price\": -10,\r\n    \"weight\": 0,\r\n    \"CategoryId\": 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/products/1",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"products",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all Orders",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/orders",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Order",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Products\":[\r\n        {\r\n         \"ProductId\":1,\r\n         \"quantity\":2\r\n        },\r\n        {\r\n         \"ProductId\":2,\r\n         \"quantity\":2\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/orders",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Order - invalid",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Products\":[\r\n        {\r\n         \"ProductId\":1,\r\n         \"quantity\":2\r\n        },\r\n        {\r\n         \"ProductId\":2,\r\n         \"quantity\":-22\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/orders",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Order - invalid ProductID",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Products\":[\r\n        {\r\n         \"ProductId\":1,\r\n         \"quantity\":2\r\n        },\r\n        {\r\n         \"ProductId\":100,\r\n         \"quantity\":2\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/orders",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User orders",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/orders/user",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"orders",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Order review",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"rating\":5,\r\n    \"review\":\"kucharz wie co robi\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/orders/2/review",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"orders",
+						"2",
+						"review"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Approve order (update)",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"OrderStatusId\":2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/orders/2",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"orders",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Approve order (update) - invalid ID",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"OrderStatusId\":2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/orders/200",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"orders",
+						"200"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Confirm Order",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/orders/2/confirm",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"orders",
+						"2",
+						"confirm"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cancel Order",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/orders/2/cancel",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"orders",
+						"2",
+						"cancel"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Orders by status",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/orders/status/1",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"orders",
+						"status",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Orders by username",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/orders/login/jan",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"orders",
+						"login",
+						"jan"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Order",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/orders/1",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"orders",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Categories",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/categories/",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"categories",
+						""
 					]
 				}
 			},
@@ -141,13 +837,16 @@
 			"response": []
 		},
 		{
-			"name": "Bulk add products",
+			"name": "Register",
 			"request": {
+				"auth": {
+					"type": "noauth"
+				},
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"Products\":[\r\n        {\r\n        \"name\": \"P1-bulk\",\r\n        \"description\": \"P1-bulk DESC\",\r\n        \"price\": 12.2,\r\n        \"weight\": 5,\r\n        \"CategoryId\": 1\r\n        },\r\n        {\r\n        \"name\": \"P2-bulk\",\r\n        \"description\": \"P2-bulk DESC\",\r\n        \"price\": 12.2,\r\n        \"weight\": 5,\r\n        \"CategoryId\": 1\r\n        },\r\n        {\r\n        \"name\": \"P3-bulk\",\r\n        \"description\": \"P3-bulk DESC\",\r\n        \"price\": 12.2,\r\n        \"weight\": 5,\r\n        \"CategoryId\": 1\r\n        }\r\n    ]\r\n}",
+					"raw": "{\r\n    \"login\":\"janek12\",\r\n    \"password\":\"k12345678\",\r\n    \"phone\":\"123456789\",\r\n    \"email\":\"panie.janex@onet.pl\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -155,279 +854,32 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:3000/init",
+					"raw": "localhost:3000/auth/register",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
-						"init"
+						"auth",
+						"register"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Add Order",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"Products\":[\r\n        {\r\n         \"ProductId\":1,\r\n         \"quantity\":2\r\n        },\r\n        {\r\n         \"ProductId\":2,\r\n         \"quantity\":2\r\n        }\r\n    ]\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:3000/orders",
-					"host": [
-						"localhost"
-					],
-					"port": "3000",
-					"path": [
-						"orders"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Add Order - invalid ProductID",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"Products\":[\r\n        {\r\n         \"ProductId\":1,\r\n         \"quantity\":2\r\n        },\r\n        {\r\n         \"ProductId\":100,\r\n         \"quantity\":2\r\n        }\r\n    ]\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:3000/orders",
-					"host": [
-						"localhost"
-					],
-					"port": "3000",
-					"path": [
-						"orders"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Approve order",
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"OrderStatusId\":2\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:3000/orders/3",
-					"host": [
-						"localhost"
-					],
-					"port": "3000",
-					"path": [
-						"orders",
-						"3"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Confirm Order",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:3000/orders/3/confirm",
-					"host": [
-						"localhost"
-					],
-					"port": "3000",
-					"path": [
-						"orders",
-						"3",
-						"confirm"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Add Order review",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"rating\":5,\r\n    \"review\":\"kucharz wie co robi\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:3000/orders/3/review",
-					"host": [
-						"localhost"
-					],
-					"port": "3000",
-					"path": [
-						"orders",
-						"3",
-						"review"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Update Product",
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n\r\n        \"name\": \"P1-Updated-2\",\r\n        \"description\": \"P1-Updated desc\",\r\n        \"price\": 15,\r\n        \"weight\": 6,\r\n        \"CategoryId\": 2\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:3000/products/1",
-					"host": [
-						"localhost"
-					],
-					"port": "3000",
-					"path": [
-						"products",
-						"1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get Order",
+			"name": "Get OrderStatus",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:3000/orders/1",
+					"raw": "localhost:3000/status",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
-						"orders",
-						"1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get Orders by username",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:3000/orders/login/jand",
-					"host": [
-						"localhost"
-					],
-					"port": "3000",
-					"path": [
-						"orders",
-						"login",
-						"jand"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get User orders",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:3000/orders/user",
-					"host": [
-						"localhost"
-					],
-					"port": "3000",
-					"path": [
-						"orders",
-						"user"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get Orders by status",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:3000/orders/status/1",
-					"host": [
-						"localhost"
-					],
-					"port": "3000",
-					"path": [
-						"orders",
-						"status",
-						"1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get Product seo-desc",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:3000/products/3/seo-description",
-					"host": [
-						"localhost"
-					],
-					"port": "3000",
-					"path": [
-						"products",
-						"3",
-						"seo-description"
+						"status"
 					]
 				}
 			},

@@ -92,7 +92,7 @@ router.get(
 
 
 
-router.put(
+router.patch(
   '/:orderId',
   passport.authenticate(["jwt"], { session: false }),
   validateHasRole(userRoles.EMPLOYEE),
