@@ -1,4 +1,4 @@
-const OrderStatus = require("../models/OrderStatus");
+const {OrderStatus} = require("../models/OrderStatus");
 
 
 const getAllStatuses = async (req, res, next)=>{
