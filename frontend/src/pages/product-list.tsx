@@ -26,8 +26,8 @@ import { Button } from '@/components/ui/button';
 
 import { Input } from "@/components/ui/input"
 import {Link} from "react-router-dom";
-import useProducts from '../hooks/useProducts';
-import useProductCategories from '../hooks/useProductCategories';
+import useProducts from '../hooks/use-products';
+import useProductCategories from '../hooks/use-product-categories';
 
 
 const ProductList: React.FC = () => {

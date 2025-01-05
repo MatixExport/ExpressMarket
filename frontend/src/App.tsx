@@ -1,12 +1,12 @@
-import ProductList from "./pages/ProductList.tsx";
+import ProductList from "./pages/product-list.tsx";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import CreateProductForm from "./pages/EditProductForm.tsx";
+import CreateProductForm from "./pages/edit-product-form.tsx";
+import AuthProvider from "./providers/auth-Provider.tsx";
+import ProtectedRoute from "./routes/protected-route.tsx";
+import ThemeProvider from "./components/theme-provider.tsx";
+import NavbarOverlay from "./components/navbar-overlay.tsx";
 import Unautenticated from "./pages/Unauthenticated.tsx";
 import Unauthorized from "./pages/Unauthorized.tsx";
-import AuthProvider from "./providers/authProvider.tsx";
-import ProtectedRoute from "./routes/ProtectedRoute.tsx";
-import ThemeProvider from "./components/theme-provider.tsx";
-import NavbarOverlay from "./components/NavbarOverlay.tsx";
 
 const App: React.FC = () => {
     return (

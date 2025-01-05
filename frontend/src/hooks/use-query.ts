@@ -3,7 +3,7 @@ import {
   useState,
 } from "react";
 
-import { Response } from "../types/ResponseType";
+import { Response } from "../types/response-type";
 
 
 const useQuery = <T>( queryFn : () => Promise<Response>) => {

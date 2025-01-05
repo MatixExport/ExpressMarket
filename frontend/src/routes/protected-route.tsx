@@ -1,5 +1,5 @@
 import React, { Component, ReactNode } from "react";
-import useAuth from "../hooks/useAuth";
+import useAuth from "../hooks/use-auth";
 import { Navigate, Outlet } from "react-router-dom";
 
 
@@ -21,10 +21,4 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({allowedRoles}) => {
     );
   };
 
-
-
-
-
-
-  
 export default ProtectedRoute;

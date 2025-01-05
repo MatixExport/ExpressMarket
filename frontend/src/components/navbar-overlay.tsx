@@ -13,7 +13,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
-import { ModeToggle } from "@/components/ModeToggle"
+import { ModeToggle } from "@/components/mode-toggle"
 
 export default function NavbarOverlay({children}:any) {
   return (

@@ -1,4 +1,4 @@
-import { fetchBackendLookup,tokenFetchBackendLookup } from "./backendLookup";
+import { fetchBackendLookup,tokenFetchBackendLookup } from "./backend-lookup";
 
 
 export const login = async(login:string,password:string)=>{

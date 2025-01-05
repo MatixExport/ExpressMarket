@@ -1,6 +1,6 @@
 import { fetchProducts } from "../lookup"
-import useQuery from "./useQuery"
-import { Product } from "../types/ProductType"
+import useQuery from "./use-query"
+import { Product } from "../types/product-type"
 
 
 const useProducts = ()=>{

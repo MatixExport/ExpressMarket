@@ -4,9 +4,9 @@ import {
   useMemo,
   useState,
 } from "react";
-import { TokenPair } from "../types/TokenPairType";
+import { TokenPair } from "../types/token-pair-type";
 import { fetchUserData } from "../lookup";
-import { User } from "../types/UserType";
+import { User } from "../types/user-type";
 import { isExpired } from "react-jwt";
 import { refreshAccessToken } from "../lookup";
 

@@ -37,7 +37,7 @@ import {
   SidebarRail,
   SidebarMenuButton
 } from "@/components/ui/sidebar"
-import { ModeToggle } from "./ModeToggle"
+import { ModeToggle } from "./mode-toggle"
 
 // This is sample data.
 const data = {

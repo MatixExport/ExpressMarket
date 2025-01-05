@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 // import 'bootstrap/dist/css/bootstrap.min.css';
 import {useParams} from "react-router-dom";
-import {Product} from "../types/ProductType"
+import {Product} from "../types/product-type"
 
 const EditProductForm: React.FC = () => {
     const { id } = useParams();

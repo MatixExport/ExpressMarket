@@ -1,6 +1,6 @@
 import { fetchProductCategories } from "../lookup"
-import useQuery from "./useQuery"
-import { ProductCategory } from "../types/ProductCategoryType"
+import useQuery from "./use-query"
+import { ProductCategory } from "../types/product-category-type"
 
 
 const useProductCategories = ()=>{
