@@ -1,53 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Link} from "react-router-dom";
-import {Product} from "../types/ProductType"
-import { fetchProducts,fetchProductCategories } from '../lookup';
-
-
+import useProducts from '../hooks/useProducts';
+import useProductCategories from '../hooks/useProductCategories';
 
 const ProductList: React.FC = () => {
-    const [products, setProducts] = useState<Product[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
+    const [products,isProductsLoading,isProductsError] = useProducts()
+    const [categories,isCategoriesLoading,isCategoriesError] = useProductCategories()
     const [nameFilter, setNameFilter] = useState<string>("");
     const [categoryFilter, setCategoryFilter] = useState<number>(0);
-    const [categories, setCategories] = useState<{ id: number; name: string }[]>([]);
+ 
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetchProducts();
-                if (response.status > 500) {
-                    throw new Error('Network response was not ok');
-                }
-                const data = response.body;
-                setProducts(data.data);
-
-                const responseCategories = await fetchProductCategories();
-                if (responseCategories.status > 500) {
-                    throw new Error('Failed to fetch categories');
-                }
-                const dataCategories = responseCategories.body;
-                setCategories(dataCategories.data);
-            } catch (error: any) {
-                setError(error.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchData();
-    }, []);
-
-
-
-    if (loading) {
+    if ((isCategoriesLoading)||(isProductsLoading)) {
         return <div>Loading...</div>;
     }
 
-    if (error) {
-        return <div>Error: {error}</div>;
+    if ((isProductsError)||(isCategoriesError)) {
+        return <div>Error</div>;
     }
 
     return (

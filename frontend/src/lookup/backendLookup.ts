@@ -3,7 +3,6 @@ import { refreshAccessToken } from ".";
 import { replace, useNavigate } from "react-router-dom";
 import { Config } from "../config";
 
-// const navigate = useNavigate()
 
 type FetchData = {
   method: string;
@@ -60,7 +59,8 @@ export const tokenFetchBackendLookup = async (method:string,endpoint:string,data
   } catch (error) {
     localStorage.removeItem("access")
     localStorage.removeItem("refresh")
-    // navigate('/error/unautenticated',{replace:true});
+    const navigate = useNavigate()
+    navigate('/error/unautenticated',{replace:true});
   }  
 
   fetchData.headers = {
