@@ -115,7 +115,7 @@ const ProductList: React.FC = () => {
                             <td>{product.description}</td>
                             <td>{product.price}</td>
                             <td>{product.weight}</td>
-                            <td>{categories[product.CategoryId].name}</td>
+                            <td>{categories[product.CategoryId-1].name}</td>
                             <td>
                                 <button className="btn btn-primary" onClick={() => {
                                     console.log(product)
