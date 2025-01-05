@@ -13,4 +13,15 @@ const updateUser = async (req, res, next)=>{
 } 
 
 
-module.exports = {updateUser}
+const getUser = async (req, res, next)=>{
+    try {
+        let user = JSON.parse(JSON.stringify(req.user)); 
+delete  user.password;
+        return res.success(user);
+    } catch (error) {
+        return res.error('An error occurred while fetching the user');
+    }
+} 
+
+
+module.exports = {updateUser,getUser}

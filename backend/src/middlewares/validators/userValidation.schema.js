@@ -38,7 +38,7 @@ const userSchema = {
         },
 
     },
-    required: ['login', 'password', 'phone', 'email'],
+    required: ['login', 'password', 'email'],
     additionalProperties: false,
 };
 

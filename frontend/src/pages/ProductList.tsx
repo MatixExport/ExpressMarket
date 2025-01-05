@@ -1,17 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Link} from "react-router-dom";
+import {Product} from "../types/ProductType"
+import { fetchProducts,fetchProductCategories } from '../lookup';
 
-interface Product {
-    id: number;
-    name: string;
-    description: string;
-    price: string;
-    weight: string;
-    createdAt: string;
-    updatedAt: string;
-    CategoryId: number;
-}
+
 
 const ProductList: React.FC = () => {
     const [products, setProducts] = useState<Product[]>([]);
@@ -24,18 +17,18 @@ const ProductList: React.FC = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('http://localhost:3000/products/');
-                if (!response.ok) {
+                const response = await fetchProducts();
+                if (response.status > 500) {
                     throw new Error('Network response was not ok');
                 }
-                const data = await response.json();
+                const data = response.body;
                 setProducts(data.data);
 
-                const responseCategories = await fetch('http://localhost:3000/categories/');
-                if (!responseCategories.ok) {
+                const responseCategories = await fetchProductCategories();
+                if (responseCategories.status > 500) {
                     throw new Error('Failed to fetch categories');
                 }
-                const dataCategories = await responseCategories.json();
+                const dataCategories = responseCategories.body;
                 setCategories(dataCategories.data);
             } catch (error: any) {
                 setError(error.message);

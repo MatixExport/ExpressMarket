@@ -1,7 +1,9 @@
-import ProductList from "./ProductList.tsx";
+import ProductList from "./pages/ProductList.tsx";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import CreateProductForm from "./EditProductForm.tsx";
+import CreateProductForm from "./pages/EditProductForm.tsx";
+import Unautenticated from "./pages/Unauthenticated.tsx";
+import Unauthorized from "./pages/Unauthorized.tsx";
 
 const App: React.FC = () => {
     return (
@@ -9,6 +11,8 @@ const App: React.FC = () => {
             <Routes>
                 <Route path="/" element={<ProductList></ProductList>} />
                 <Route path="/editProduct/:id" element={<CreateProductForm />} />
+                <Route path="/error/unautenticated" element={<Unautenticated />} />
+                <Route path="/error/unauthorized" element={<Unauthorized />} />
                 {/*<Route path="/about" element={<About />} />*/}
                 {/*<Route path="*" element={<NotFound />} />*/}
             </Routes>

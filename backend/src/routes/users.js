@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const {updateUser} = require("../controllers/userController");
+const {updateUser,getUser} = require("../controllers/userController");
 const {updateUserValidator} = require('../middlewares/validators/userValidation')
 const {validatePkExists,validateIsUserOrHasRole} = require('../middlewares/validators/validation');
 const User = require('../models/User');
@@ -17,5 +17,10 @@ router.put(
   validateIsUserOrHasRole(userRoles.EMPLOYEE),
   updateUserValidator,
   updateUser);
+
+router.get(
+    '/whoami',
+    passport.authenticate(["jwt"], { session: false }),
+    getUser);
 
 module.exports = router;
