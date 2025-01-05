@@ -1,8 +1,34 @@
 import React, { useEffect, useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableFooter,
+    TableHead,
+    TableHeader,
+    TableRow,
+  } from "@/components/ui/table"
+
+import { Label } from "@/components/ui/label"
+import { PenBox, ShoppingBasket } from "lucide-react"
+import {
+Select,
+SelectContent,
+SelectGroup,
+SelectItem,
+SelectLabel,
+SelectTrigger,
+SelectValue,
+} from "@/components/ui/select"
+
+import { Button } from '@/components/ui/button';
+
+import { Input } from "@/components/ui/input"
 import {Link} from "react-router-dom";
 import useProducts from '../hooks/useProducts';
 import useProductCategories from '../hooks/useProductCategories';
+
 
 const ProductList: React.FC = () => {
     const [products,isProductsLoading,isProductsError] = useProducts()
@@ -20,47 +46,53 @@ const ProductList: React.FC = () => {
     }
 
     return (
-        <div className="container mt-5">
-            <h2 className="text-center mb-4">Product List</h2>
+        <div className="container mt-5 mx-8">
+            <div className='w-1/2 mx-*'>
+                <Label htmlFor="nameFilter" className='mb-8'>Name Filter:</Label>
+                <Input id="nameFilter" className="form-control mb-3" onChange={(e) => setNameFilter(e.target.value)}/>
 
-            <label htmlFor="nameFilter">Name Filter:</label>
-            <input id="nameFilter" className="form-control mb-3" onChange={(e) => setNameFilter(e.target.value)}/>
-
-            <label htmlFor="categoryFilter">Category Filter:</label>
-            <select
-                id="categoryFilter"
-                name="categoryFilter"
-                className="form-control mb-4"
-                value={categoryFilter}
-                onChange={(e) => setCategoryFilter(Number(e.target.value))}
-            >
-                <option value={0} disabled>Select a category</option>
-                {categories.map((category) => (
-                    <option key={category.id} value={category.id}>
+                <Label htmlFor="categoryFilter" className='mb-8'>Category Filter:</Label>
+                <Select 
+                    onValueChange={(value) => setCategoryFilter(Number(value))} 
+                    defaultValue={categoryFilter.toString()} 
+                    name="categoryFilter"
+                >
+                <SelectTrigger className="form-control mb-4">
+                    <SelectValue placeholder="Select a category" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="0" disabled>Select a category</SelectItem>
+                    {categories.map((category) => (
+                    <SelectItem key={category.id} value={category.id.toString()}>
                         {category.name}
-                    </option>
-                ))}
-            </select>
+                    </SelectItem>
+                    ))}
+                </SelectContent>
+                </Select>
 
-            <button
-                className="btn btn-primary mb-3"
-                onClick={() => {setCategoryFilter(0); setNameFilter("")}}
-            >Reset filters</button>
+                <Button
+                    className="btn btn-primary mb-3"
+                    onClick={() => {setCategoryFilter(0); setNameFilter("")}}
+                >
+                    Reset filters
+                </Button>
+            </div>
+            
 
 
-            <table className="table table-bordered">
-                <thead className="thead-dark">
-                <tr>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Price</th>
-                    <th>Weight</th>
-                    <th>Category</th>
-                    <th>Buy</th>
-                    <th>Edit</th>
-                </tr>
-                </thead>
-                <tbody>
+            <Table className="table table-bordered">
+                <TableHeader className="thead-dark">
+                <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Description</TableHead>
+                    <TableHead>Price</TableHead>
+                    <TableHead>Weight</TableHead>
+                    <TableHead>Category</TableHead>
+                    <TableHead>Buy</TableHead>
+                    <TableHead>Edit</TableHead>
+                </TableRow>
+                </TableHeader>
+                <TableBody>
                 {products
                     .filter((product) => {
                         return product.name.includes(nameFilter)
@@ -72,29 +104,31 @@ const ProductList: React.FC = () => {
                         }
                     )
                     .map((product) => (
-                        <tr key={product.id}>
-                            <td>{product.name}</td>
-                            <td>{product.description}</td>
-                            <td>{product.price}</td>
-                            <td>{product.weight}</td>
-                            <td>{categories[product.CategoryId-1].name}</td>
-                            <td>
-                                <button className="btn btn-primary" onClick={() => {
+                        <TableRow key={product.id}>
+                            <TableCell>{product.name}</TableCell>
+                            <TableCell>{product.description}</TableCell>
+                            <TableCell>{product.price}</TableCell>
+                            <TableCell>{product.weight}</TableCell>
+                            <TableCell>{categories[product.CategoryId-1].name}</TableCell>
+                            <TableCell>
+                            <Button variant="outline" size="icon" onClick={() => {
                                     console.log(product)
-                                }}>Buy
-                                </button>
-                            </td>
-                            <td>
-                                <Link to={`/editProduct/${product.id}`} className="btn btn-primary">Edit</Link>
-                                {/*<button  onClick={() => {*/}
-                                {/*    console.log(product)*/}
-                                {/*}}>*/}
-                                {/*</button>*/}
-                            </td>
-                        </tr>
+                                }}>
+                                <ShoppingBasket />
+                            </Button>
+                            </TableCell>
+                            <TableCell>
+                           
+                                <Link to={`/editProduct/${product.id}`} className="btn btn-primary">
+                                    <Button variant="outline" size="icon">
+                                        <PenBox />
+                                    </Button>
+                                </Link>
+                            </TableCell>
+                        </TableRow>
                     ))}
-                </tbody>
-            </table>
+                </TableBody>
+            </Table>
         </div>
     );
 };
