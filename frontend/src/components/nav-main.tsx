@@ -1,10 +1,10 @@
 "use client"
 
-import { ChevronRight, type LucideIcon } from "lucide-react"
+import {type LucideIcon } from "lucide-react"
+import { Link } from "react-router-dom"
 
 import {
   Collapsible,
-  CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
 import {
@@ -13,11 +13,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
-import { ModeToggle } from "./mode-toggle"
 
 export function NavMain({
   items,
@@ -38,6 +34,8 @@ export function NavMain({
       <SidebarGroupLabel>Pages</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
+          <Link to={item.url}>
+      
           <Collapsible
             key={item.title}
             asChild
@@ -53,6 +51,7 @@ export function NavMain({
               </CollapsibleTrigger>
             </SidebarMenuItem>
           </Collapsible>
+          </Link>
         ))}
       </SidebarMenu>
     </SidebarGroup>

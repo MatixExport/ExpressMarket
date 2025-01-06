@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, {useState } from 'react';
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
-    TableFooter,
     TableHead,
     TableHeader,
     TableRow,
@@ -15,9 +13,7 @@ import { PenBox, ShoppingBasket } from "lucide-react"
 import {
 Select,
 SelectContent,
-SelectGroup,
 SelectItem,
-SelectLabel,
 SelectTrigger,
 SelectValue,
 } from "@/components/ui/select"

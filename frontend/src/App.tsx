@@ -8,7 +8,8 @@ import NavbarOverlay from "./components/navbar-overlay.tsx";
 import Unautenticated from "./pages/Unauthenticated.tsx";
 import Unauthorized from "./pages/Unauthorized.tsx";
 import UnauthenticatedOnlyRoute from "./routes/unauthenticated-only-route.tsx";
-import { LoginForm } from "./pages/login-form.tsx";
+import LoginForm from "./pages/login-form.tsx";
+import AccountDetails from "./pages/account-details.tsx";
 
 const App: React.FC = () => {
     return (
@@ -23,6 +24,7 @@ const App: React.FC = () => {
                     <Route path="/error/unauthorized" element={<Unauthorized />} />
                     <Route element={<ProtectedRoute/>}>
                         <Route path="/test/unauth" element={<CreateProductForm/>}/>
+                        <Route path="/account" element={<AccountDetails/>}/>
                     </Route>
                     <Route element={<UnauthenticatedOnlyRoute/>}>
                         <Route path="/auth/login" element={<LoginForm/>}/>

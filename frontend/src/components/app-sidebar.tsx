@@ -27,15 +27,10 @@ import SignInButton from "./sign-in-button"
 import useAuth from "@/hooks/use-auth"
 
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   navMain: [
     {
-      title: "Orders",
-      url: "#",
+      title: "Products",
+      url: "/",
       icon: SquareTerminal,
       isActive: true,
       items: [
@@ -43,7 +38,7 @@ const data = {
       ],
     },
     {
-      title: "Account",
+      title: "...",
       url: "#",
       icon: Bot,
       items: [

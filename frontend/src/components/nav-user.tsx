@@ -25,6 +25,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { Link } from "react-router-dom"
 
 export function NavUser({
   user,
@@ -78,10 +79,12 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
+              <Link to="/account">
               <DropdownMenuItem>
                 <BadgeCheck />
                 Account
               </DropdownMenuItem>
+              </Link>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={(e)=>{if(onLogout) onLogout()}}>

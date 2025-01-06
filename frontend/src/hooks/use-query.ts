@@ -19,7 +19,7 @@ const useQuery = <T>( queryFn : () => Promise<Response>) => {
 
     const result = await queryFn();
     if(!canceled){
-      if(result.status >= 500){
+      if(result.status >= 400){
         setIsError(true)
       }else{
         setData(result.body.data as T[]);

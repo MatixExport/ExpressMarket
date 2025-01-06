@@ -20,12 +20,14 @@ import FormFieldRender from "../components/form-field-render"
 import { z } from "zod"
 import { requestLogin } from "@/lookup";
 import useAuth from "@/hooks/use-auth";
+import { useState } from "react";
+import { Label } from "@/components/ui/label";
 
 
-export function LoginForm({
+const LoginForm = ({
   className,
   ...props
-}: React.ComponentPropsWithoutRef<"div">) {
+}: React.ComponentPropsWithoutRef<"div">)=> {
 
    const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -37,13 +39,15 @@ export function LoginForm({
   })
 
   const {user,login,logout} = useAuth()
+  const [globalError,setGlobalError] = useState<string|null>(null)
  
   function onSubmit(values: z.infer<typeof LoginSchema>) {
+    setGlobalError(null)
     requestLogin(values.login,values.password).then((res)=>{
       console.log(res.status)
-      if(res.status >= 500){
+      if(res.status >= 400){
         console.log("Server-side validation error")
-  
+        setGlobalError("Invalid username or password")
       }else{
         console.log(res.body.data)
         login(res.body.data)
@@ -98,6 +102,9 @@ export function LoginForm({
               <Button type="submit" className="w-full">
                 Login
               </Button>
+              <Label className="text-red-900 font-bold" >
+                {globalError ? globalError : ""}
+              </Label>
             </div>
             <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{" "}
@@ -112,3 +119,5 @@ export function LoginForm({
     </div>
   )
 }
+
+export default LoginForm;

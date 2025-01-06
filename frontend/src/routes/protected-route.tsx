@@ -1,4 +1,4 @@
-import React, { Component, ReactNode } from "react";
+import React from "react";
 import useAuth from "../hooks/use-auth";
 import { Navigate, Outlet } from "react-router-dom";
 
@@ -8,14 +8,16 @@ interface ProtectedRouteProps {
   }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({allowedRoles}) => {
-    const {user} = useAuth();
+    const {user,token} = useAuth();
   
-    if (!user) {
+    if (!token) {
         return (<Navigate to="/error/unautenticated" />);
     }
-    if((allowedRoles)&&(!allowedRoles.includes(user.role))){
-        return (<Navigate to="/error/unauthorized" />);
-    }
+    //currently user roles will not be available at this time
+    //in order to fix this, user could be saved in localStorage
+    // if((allowedRoles)&&(!allowedRoles.includes(user.role))){
+    //     return (<Navigate to="/error/unauthorized" />);
+    // }
     return (
         <Outlet/>
     );
