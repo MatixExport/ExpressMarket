@@ -64,8 +64,15 @@ const EditProductForm: React.FC = () => {
         updateProduct(values).then(
             (result) =>{
                 if(result.status >= 400 ){
-                    console.log(result.body)
-                    setError("Backend error")
+                    const messages:[{message:string, field:string}] = result.body.error.message;
+                    messages.forEach(({field, message})=>{
+                        if(field === "global"){
+                            setError(message)
+                        }
+                        else {
+                            form.setError(field, {type:"server",message: message})
+                        }
+                    })
                 }
                 else {
                     setError(null);
