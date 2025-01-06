@@ -11,12 +11,16 @@ import { Product } from "@/types/product-type";
 
 interface CartContextValue {
     items:ShopCartItem[],
-    addItem:
+    setItems:(items:ShopCartItem[])=>void,
+    addItem:(item:ShopCartItem)=>void,
+    removeItem:(item:ShopCartItem)=>void
 }
 
 export const CartContext = createContext<CartContextValue>({
     items:[],
-    addItem:(item:ShopCartItem)=>void
+    setItems:()
+    addItem:(item:ShopCartItem)=>void,
+    removeItem:(item:ShopCartItem)=>void
 });
 
 const ShopCartProvider = ({ children }:any) => {

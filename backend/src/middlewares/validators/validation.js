@@ -2,10 +2,12 @@ const {StatusCodes} = require('http-status-codes');
 
 
 const parseAjvError = (error)=>{
+    let field = error.instancePath.split("/")
+    field = field[field.length - 1]
     return {
-      params:error.params,
+      // params:error.params,
       message:error.message,
-      instance:error.instancePath
+      field:field
     }
   }
 
