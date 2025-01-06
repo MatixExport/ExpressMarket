@@ -1,17 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import {useNavigate, useParams} from "react-router-dom";
+import React, {useEffect, useState} from 'react';
+import {useParams} from "react-router-dom";
 import {Product, UpdateProduct} from "../types/product-type"
 import useProductCategories from "@/hooks/use-product-categories.ts";
 import {fetchProduct, updateProduct} from "@/lookup";
+import {useForm} from "react-hook-form";
+import {z} from "zod";
+import {zodResolver} from "@hookform/resolvers/zod";
+import UpdateProductSchema from "@/types/update-product-schema.ts";
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card.tsx";
+import FormFieldRender from "@/components/form-field-render.tsx";
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form.tsx";
+import {Button} from "@/components/ui/button.tsx";
+import {Textarea} from "@/components/ui/textarea.tsx";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select.tsx";
 
 const EditProductForm: React.FC = () => {
     const { id } = useParams<{id: string}>();
-
     const [categories,isCategoriesLoading,isCategoriesError] = useProductCategories()
-    const navigate = useNavigate();
-    if(id === undefined || id === null) {
-        navigate("/error")
-    }
+
     const [product, setProduct] = useState<UpdateProduct>({
         CategoryId: 0,
         description: "",
@@ -20,6 +26,7 @@ const EditProductForm: React.FC = () => {
         price: 0,
         weight: 0
     })
+
     const [message, setMessage] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
 
@@ -27,7 +34,7 @@ const EditProductForm: React.FC = () => {
         fetchProduct(id as string).then(
             (result) =>{
                 if(result.status >= 400){
-                    setError("Backend error")
+                    setError(result.body.error.message[0]);
                 }else{
                     const { createdAt, updatedAt, ...filteredProduct } = result.body.data as Product;
                     setProduct(filteredProduct as UpdateProduct);
@@ -37,12 +44,24 @@ const EditProductForm: React.FC = () => {
         )
     }, []);
 
-    const handleSubmit = async (event: React.FormEvent) => {
-        event.preventDefault();
+    const form = useForm<z.infer<typeof UpdateProductSchema>>({
+        resolver: zodResolver(UpdateProductSchema),
+        reValidateMode: "onChange",
+        defaultValues: {...product},
+    })
+
+    useEffect(() => {
+        if (product) {
+            form.reset(product);
+        }
+    }, [product, form.reset]);
+
+
+    const onSubmit = async (values: z.infer<typeof UpdateProductSchema>) => {
         setError(null);
         setMessage(null);
 
-        updateProduct(product).then(
+        updateProduct(values).then(
             (result) =>{
                 if(result.status >= 400 ){
                     console.log(result.body)
@@ -65,78 +84,122 @@ const EditProductForm: React.FC = () => {
         return <div>Error: {error}</div>;
     }
 
+    if (message){
+        return <div>{message}</div>;
+    }
+
 
     return (
-        <div className="container mt-5">
-            <h2 className="text-center mb-4">Edit Product</h2>
-            {message && <div className="alert alert-success">{message}</div>}
-            {error && <div className="alert alert-danger">{error}</div>}
-            <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                    <label htmlFor="name">Name</label>
-                    <input
-                        type="text"
-                        id="name"
-                        className="form-control"
-                        value={product.name}
-                        onChange={(e) => setProduct({ ...product, name: e.target.value })}
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="description">Description</label>
-                    <textarea
-                        id="description"
-                        className="form-control"
-                        value={product.description}
-                        onChange={(e) => setProduct({ ...product, description: e.target.value })}
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="price">Price</label>
-                    <input
-                        type="number"
-                        id="price"
-                        className="form-control"
-                        value={product.price}
-                        onChange={(e) => setProduct({ ...product, price: parseFloat(e.target.value) })}
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="weight">Weight</label>
-                    <input
-                        type="number"
-                        id="weight"
-                        className="form-control"
-                        value={product.weight}
-                        onChange={(e) => setProduct({ ...product, weight: parseFloat(e.target.value) })}
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="categoryId">Category</label>
-                    <select
-                        id="categoryId"
-                        className="form-control"
-                        value={product.CategoryId}
-                        onChange={(e) =>{
-                            console.log(e.target.value);
-                            setProduct({ ...product, CategoryId: parseInt(e.target.value) });}
-                        }
-                        required
-                    >
-                        <option value={0} disabled>Select a category</option>
-                        {categories.map((category) => (
-                            <option key={category.id} value={category.id}>
-                                {category.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-                <button type="submit" className="btn btn-primary mt-3">Edit Product</button>
-            </form>
+        <div>
+            <Card>
+                <CardHeader>
+                    <CardTitle className="text-2xl">Update product</CardTitle>
+                    <CardDescription>
+                        Enter new values for product
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onSubmit)}>
+                            <div className="flex flex-col gap-6">
+                                <div className="grid gap-2">
+                                    <FormField
+                                        name="name"
+                                        control={form.control}
+                                        render={({field}) => (
+                                            <FormFieldRender
+                                                label="Name"
+                                                type="text"
+                                                field={field}
+                                                placeholder="Name"
+                                            />
+                                        )}
+                                    />
+                                </div>
+                                <div className="grid gap-2">
+                                    <FormField
+                                        name="description"
+                                        control={form.control}
+                                        render={({field}) => (
+                                            <FormItem>
+                                                <FormLabel>Description</FormLabel>
+                                                <FormControl>
+                                                    <Textarea placeholder="Description" {...field} />
+                                                </FormControl>
+                                                <FormMessage/>
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+
+                                <div className="grid gap-2">
+                                    <FormField
+                                        name="price"
+                                        control={form.control}
+                                        render={({field}) => (
+                                            <FormFieldRender
+                                                label="Price"
+                                                type="number"
+                                                field={field}
+                                                placeholder="Price"
+                                            />
+                                        )}
+                                    />
+                                </div>
+                                <div className="grid gap-2">
+                                    <FormField
+                                        name="weight"
+                                        control={form.control}
+                                        render={({field}) => (
+                                            <FormFieldRender
+                                                label="Weight"
+                                                type="number"
+                                                field={field}
+                                                placeholder="Weight"
+                                            />
+                                        )}
+                                    />
+                                </div>
+                                <div className="grid gap-2">
+                                    <FormField
+                                        name="CategoryId"
+                                        control={form.control}
+                                        render={({field}) => (
+                                            <FormItem>
+                                                <FormLabel>Category</FormLabel>
+                                                <FormControl>
+                                                    <Select onValueChange={field.onChange}
+                                                            defaultValue={field.value.toString()}>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Category"/>
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            <SelectItem value="0" disabled>Select a
+                                                                category</SelectItem>
+                                                            {categories.map((category) => (
+                                                                <SelectItem key={category.id} value={category.id.toString()}>
+                                                                    {category.name}
+                                                                </SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>
+                                                </FormControl>
+                                                <FormMessage/>
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+
+
+                                <Button type="submit" className="w-full">
+                                    Update product
+                                </Button>
+
+                            </div>
+                        </form>
+                    </Form>
+                </CardContent>
+            </Card>
         </div>
     );
 };
