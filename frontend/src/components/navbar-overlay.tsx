@@ -14,6 +14,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar"
 import { ModeToggle } from "@/components/mode-toggle"
+import useAuth from "@/hooks/use-auth"
 
 export default function NavbarOverlay({children}:any) {
   return (

@@ -1,7 +1,7 @@
 import { fetchBackendLookup,tokenFetchBackendLookup } from "./backend-lookup";
 
 
-export const login = async(login:string,password:string)=>{
+export const requestLogin = async(login:string,password:string)=>{
     const endpoint:string = "/auth/login";
     return await fetchBackendLookup("POST",endpoint,{
         login:login,

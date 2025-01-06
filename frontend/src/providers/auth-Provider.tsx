@@ -41,9 +41,10 @@ const AuthProvider = ({ children }:any) => {
   }
 
   const logout = ()=>{
-      localStorage.removeItem("access");
-      localStorage.removeItem("refresh");
-      setUser(null)
+    console.log("Singing out")
+    localStorage.removeItem("access");
+    localStorage.removeItem("refresh");
+    setUser(null)
   }
 
   // const getValidAccessToken = async ()=>{

@@ -59,8 +59,7 @@ export const tokenFetchBackendLookup = async (method:string,endpoint:string,data
   } catch (error) {
     localStorage.removeItem("access")
     localStorage.removeItem("refresh")
-    const navigate = useNavigate()
-    navigate('/error/unautenticated',{replace:true});
+    console.log("no valid token")
   }  
 
   fetchData.headers = {
