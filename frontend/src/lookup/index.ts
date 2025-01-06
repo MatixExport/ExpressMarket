@@ -43,6 +43,11 @@ export const fetchProduct = async(id: string) =>{
     return await fetchBackendLookup("GET",endpoint)
 }
 
+export const fetchGroqDescription = async(id: string) =>{
+    const endpoint:string = `/products/${id}/seo-description`;
+    return await fetchBackendLookup("GET",endpoint)
+}
+
 export const fetchProductCategories = async ()=>{
     const endpoint:string = "/categories/"
     return await fetchBackendLookup("GET",endpoint)
