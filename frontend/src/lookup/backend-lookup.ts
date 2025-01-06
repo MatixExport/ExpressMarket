@@ -1,6 +1,5 @@
 import { isExpired } from "react-jwt";
 import { refreshAccessToken } from ".";
-import { replace, useNavigate } from "react-router-dom";
 import { Config } from "../config";
 
 
@@ -18,7 +17,7 @@ type FetchData = {
 
 
 const getDefaultRequest = (method:string,data?:any)=>{
-  let fetchData : FetchData = {
+  const fetchData : FetchData = {
   method: method,
   mode: 'cors',
   cache: 'no-cache',
@@ -43,20 +42,23 @@ const getDefaultRequest = (method:string,data?:any)=>{
 
 export const fetchBackendLookup = async (method:string,endpoint:string,data?:any)=> {
   const url = Config.SERVER_URL + endpoint;
-  let fetchData = getDefaultRequest(method,data)
-  let response = await fetch(url, fetchData);
-  let responseBody = await response.json();
+  const fetchData = getDefaultRequest(method,data)
+  const response = await fetch(url, fetchData);
+  const responseBody = await response.json();
+
+
+
   return {status:response.status,body:responseBody}
 } 
 
 export const tokenFetchBackendLookup = async (method:string,endpoint:string,data?:any)=>{
   const url = Config.SERVER_URL + endpoint;
-  let fetchData = getDefaultRequest(method,data)
+  const fetchData = getDefaultRequest(method,data)
   
   let token = ""
   try {
     token = await getValidAccessToken();
-  } catch (error) {
+  } catch {
     localStorage.removeItem("access")
     localStorage.removeItem("refresh")
     console.log("no valid token")
@@ -67,8 +69,8 @@ export const tokenFetchBackendLookup = async (method:string,endpoint:string,data
     'Authorization': `Bearer ${token}`,
   };
 
-  let response = await fetch(url, fetchData);
-  let responseBody = await response.json();
+  const response = await fetch(url, fetchData);
+  const responseBody = await response.json();
   return {status:response.status,body:responseBody}
   
 }
