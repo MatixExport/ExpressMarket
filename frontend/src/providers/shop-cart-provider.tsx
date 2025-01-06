@@ -4,10 +4,8 @@ import {
   useMemo,
   useState,
 } from "react";
-import { TokenPair } from "../types/token-pair-type";
-import { fetchUserData } from "../lookup";
 import ShopCartItem from "@/types/shop-cart-item";
-import { Product } from "@/types/product-type";
+
 
 interface CartContextValue {
     items:ShopCartItem[],
@@ -18,15 +16,24 @@ interface CartContextValue {
 
 export const CartContext = createContext<CartContextValue>({
     items:[],
-    setItems:()
-    addItem:(item:ShopCartItem)=>void,
-    removeItem:(item:ShopCartItem)=>void
+    setItems:(items:ShopCartItem[])=>{},
+    addItem:(item:ShopCartItem)=>{},
+    removeItem:(item:ShopCartItem)=>{}
 });
 
 const ShopCartProvider = ({ children }:any) => {
-    const [items,setItems] = useState([])
+    const [items,setItems] = useState<ShopCartItem[]>([])
 
     const addItem = (item:ShopCartItem)=>{
+        let itemExists = false
+        const existingItem = items.map((el)=>{
+            if(el.product.id === item.product.id){
+                itemExists = true
+            }
+        })
+    }
+
+    const removeItem = (item:ShopCartItem)=>{
 
     }
     
@@ -39,7 +46,9 @@ const ShopCartProvider = ({ children }:any) => {
     const contextValue = useMemo(
     () => ({
         items,
-        addItem
+        setItems,
+        addItem,
+        removeItem
     }),
     []
     );
@@ -50,4 +59,4 @@ const ShopCartProvider = ({ children }:any) => {
     )
     };
 
-export default CartContext
+export default ShopCartProvider

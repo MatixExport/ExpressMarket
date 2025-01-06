@@ -6,13 +6,31 @@ const responseFormatter = (req, res, next) => {
         data
       });
     };
+
+    res.errors = (messages,code = StatusCodes.BAD_REQUEST) =>{
+      res.status(code).json({
+        instance:req.url,
+        error: {
+          code:code,
+          message:messages
+        },
+        metadata: {
+          timestamp: new Date().toISOString(),
+        }
+      });
+    }
   
     res.error = (message, code = StatusCodes.BAD_REQUEST) => {
       res.status(code).json({
         instance:req.url,
         error: {
           code,
-          message,
+          message:[
+            {
+              message:message,
+              field:"global"
+            }
+        ]
         },
         metadata: {
           timestamp: new Date().toISOString(),

@@ -5,7 +5,6 @@ const parseAjvError = (error)=>{
     let field = error.instancePath.split("/")
     field = field[field.length - 1]
     return {
-      // params:error.params,
       message:error.message,
       field:field
     }
@@ -58,7 +57,7 @@ const addValidator = async (validate,req,res, next) => {
     const isValid = validate(req.body);
     if (!isValid && validate.errors) { 
         const errors = await validate.errors;
-        return res.error(errors.map(parseAjvError));
+        return res.errors(errors.map(parseAjvError));
     }
     next(); 
 };
