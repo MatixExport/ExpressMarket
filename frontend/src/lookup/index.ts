@@ -1,4 +1,5 @@
 import { fetchBackendLookup,tokenFetchBackendLookup } from "./backend-lookup";
+import {UpdateProduct} from "@/types/product-type.ts";
 
 
 export const requestLogin = async(login:string,password:string)=>{
@@ -37,7 +38,18 @@ export const fetchProducts = async ()=>{
     return await fetchBackendLookup("GET",endpoint)
 }
 
+export const fetchProduct = async(id: string) =>{
+    const endpoint:string = `/products/${id}`;
+    return await fetchBackendLookup("GET",endpoint)
+}
+
 export const fetchProductCategories = async ()=>{
     const endpoint:string = "/categories/"
     return await fetchBackendLookup("GET",endpoint)
+}
+
+export const updateProduct = async (product: UpdateProduct) =>{
+    const {id, ...data} = {...product}
+    const endpoint:string = `/products/${id}`;
+    return await tokenFetchBackendLookup("PUT",endpoint, data);
 }

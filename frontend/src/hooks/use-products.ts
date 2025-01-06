@@ -4,7 +4,7 @@ import { Product } from "../types/product-type"
 
 
 const useProducts = ()=>{
-   return useQuery<Product>(fetchProducts)
+   return useQuery<Product[]>(fetchProducts)
 }
 
 export default useProducts;

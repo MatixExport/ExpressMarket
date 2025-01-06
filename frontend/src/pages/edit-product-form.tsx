@@ -1,46 +1,40 @@
 import React, { useEffect, useState } from 'react';
-// import 'bootstrap/dist/css/bootstrap.min.css';
-import {useParams} from "react-router-dom";
-import {Product} from "../types/product-type"
+import {useNavigate, useParams} from "react-router-dom";
+import {Product, UpdateProduct} from "../types/product-type"
+import useProductCategories from "@/hooks/use-product-categories.ts";
+import {fetchProduct, updateProduct} from "@/lookup";
 
 const EditProductForm: React.FC = () => {
-    const { id } = useParams();
-    const [product, setProduct] = useState<Product>();
+    const { id } = useParams<{id: string}>();
 
-    const [categories, setCategories] = useState<{ id: number; name: string }[]>([]);
+    const [categories,isCategoriesLoading,isCategoriesError] = useProductCategories()
+    const navigate = useNavigate();
+    if(id === undefined || id === null) {
+        navigate("/error")
+    }
+    const [product, setProduct] = useState<UpdateProduct>({
+        CategoryId: 0,
+        description: "",
+        id: 0,
+        name: "",
+        price: 0,
+        weight: 0
+    })
     const [message, setMessage] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const fetchProduct = async ()=>{
-            try {
-                const response = await fetch(`http://localhost:3000/products/${id}`);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch product');
+        fetchProduct(id as string).then(
+            (result) =>{
+                if(result.status >= 400){
+                    setError("Backend error")
+                }else{
+                    const { createdAt, updatedAt, ...filteredProduct } = result.body.data as Product;
+                    setProduct(filteredProduct as UpdateProduct);
                 }
-                const data = await response.json();
-                setProduct(data.data);
-            } catch (error: any) {
-                setError(error.message);
+                setError(null);
             }
-        }
-
-
-        const fetchCategories = async () => {
-            try {
-                const response = await fetch('http://localhost:3000/categories/');
-                if (!response.ok) {
-                    throw new Error('Failed to fetch categories');
-                }
-                const data = await response.json();
-                setCategories(data.data); // Assuming the API response has a data field
-            } catch (error: any) {
-                setError(error.message);
-            }
-        };
-
-        fetchCategories();
-        fetchProduct();
+        )
     }, []);
 
     const handleSubmit = async (event: React.FormEvent) => {
@@ -48,33 +42,29 @@ const EditProductForm: React.FC = () => {
         setError(null);
         setMessage(null);
 
-
-        try {
-            const response = await fetch(`http://localhost:3000/products/${id}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(product),
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to update product');
+        updateProduct(product).then(
+            (result) =>{
+                if(result.status >= 400 ){
+                    console.log(result.body)
+                    setError("Backend error")
+                }
+                else {
+                    setError(null);
+                    setMessage('Product updated successfully!');
+                }
             }
+        )
 
-            setMessage('Product updated successfully!');
-        } catch (error: any) {
-            setError(error.message);
-        }
     };
 
-    if(product === undefined){
+    if(isCategoriesLoading){
         return <div>Loading...</div>;
     }
 
-    if (error) {
+    if (error || isCategoriesError) {
         return <div>Error: {error}</div>;
     }
+
 
     return (
         <div className="container mt-5">
@@ -110,7 +100,7 @@ const EditProductForm: React.FC = () => {
                         id="price"
                         className="form-control"
                         value={product.price}
-                        onChange={(e) => setProduct({ ...product, price: e.target.value })}
+                        onChange={(e) => setProduct({ ...product, price: parseFloat(e.target.value) })}
                         required
                     />
                 </div>
@@ -121,7 +111,7 @@ const EditProductForm: React.FC = () => {
                         id="weight"
                         className="form-control"
                         value={product.weight}
-                        onChange={(e) => setProduct({ ...product, weight: e.target.value })}
+                        onChange={(e) => setProduct({ ...product, weight: parseFloat(e.target.value) })}
                         required
                     />
                 </div>
@@ -131,12 +121,15 @@ const EditProductForm: React.FC = () => {
                         id="categoryId"
                         className="form-control"
                         value={product.CategoryId}
-                        onChange={(e) => setProduct({ ...product, CategoryId: parseInt(e.target.value) })}
+                        onChange={(e) =>{
+                            console.log(e.target.value);
+                            setProduct({ ...product, CategoryId: parseInt(e.target.value) });}
+                        }
                         required
                     >
                         <option value={0} disabled>Select a category</option>
                         {categories.map((category) => (
-                            <option key={category.id} value={category.name}>
+                            <option key={category.id} value={category.id}>
                                 {category.name}
                             </option>
                         ))}
