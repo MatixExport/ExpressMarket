@@ -25,6 +25,8 @@ import {
 } from "@/components/ui/sidebar"
 import SignInButton from "./sign-in-button"
 import useAuth from "@/hooks/use-auth"
+import { Link } from "react-router-dom"
+import ShoppingCart from "./shop-cart"
 
 const data = {
   navMain: [
@@ -38,8 +40,8 @@ const data = {
       ],
     },
     {
-      title: "...",
-      url: "#",
+      title: "Checkout",
+      url: "/checkout",
       icon: Bot,
       items: [
    
@@ -87,9 +89,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               avatar:user.login.substring(0,2).toUpperCase()
             }} />
         ): (
-        <div className="flex mb-2 content-center w-full">
-            <SignInButton/>
-        </div>
+          <SidebarMenu>
+            <SidebarMenuItem>
+            <div className="flex mb-2 content-center w-full">
+                <SignInButton/>
+            </div>
+          </SidebarMenuItem>
+        </SidebarMenu>
         )}
       
       </SidebarFooter>

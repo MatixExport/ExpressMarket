@@ -10,16 +10,20 @@ import Unauthorized from "./pages/Unauthorized.tsx";
 import UnauthenticatedOnlyRoute from "./routes/unauthenticated-only-route.tsx";
 import LoginForm from "./pages/login-form.tsx";
 import AccountDetails from "./pages/account-details.tsx";
+import ShopCartProvider from "./providers/shop-cart-provider.tsx";
+import Checkout from "./pages/checkout.tsx";
 
 const App: React.FC = () => {
     return (
             <BrowserRouter>
                 <AuthProvider>
                 <ThemeProvider>
+                <ShopCartProvider>
                 <NavbarOverlay>
                 <Routes>
                     <Route path="/" element={<ProductList></ProductList>} />
                     <Route path="/editProduct/:id" element={<CreateProductForm />} />
+                    <Route path="/checkout" element={<Checkout />} />
                     <Route path="/error/unautenticated" element={<Unautenticated />} />
                     <Route path="/error/unauthorized" element={<Unauthorized />} />
                     <Route element={<ProtectedRoute/>}>
@@ -33,6 +37,7 @@ const App: React.FC = () => {
                     {/*<Route path="*" element={<NotFound />} />*/}
                 </Routes>
                 </NavbarOverlay>
+                </ShopCartProvider>
                 </ThemeProvider>
                 </AuthProvider>
             </BrowserRouter>

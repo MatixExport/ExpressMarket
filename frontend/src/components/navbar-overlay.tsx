@@ -10,11 +10,14 @@ import {
 import { Separator } from "@/components/ui/separator"
 import {
   SidebarInset,
+  SidebarMenuItem,
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
 import { ModeToggle } from "@/components/mode-toggle"
 import useAuth from "@/hooks/use-auth"
+import { Link } from "react-router-dom"
+import ShoppingCart from "./shop-cart"
 
 export default function NavbarOverlay({children}:any) {
   return (
@@ -40,7 +43,15 @@ export default function NavbarOverlay({children}:any) {
             </Breadcrumb>
           </div>
           <div className="mr-5">
-             <ModeToggle/>
+            <div className="flex">
+              <Link key={450} to="/checkout">
+                         <SidebarMenuItem className="flex justify-center mr-2">
+                           <ShoppingCart/>
+                         </SidebarMenuItem>
+              </Link>
+              <ModeToggle/>
+            </div>
+           
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">

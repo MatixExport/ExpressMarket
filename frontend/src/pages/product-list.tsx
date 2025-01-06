@@ -24,6 +24,7 @@ import { Input } from "@/components/ui/input"
 import {Link} from "react-router-dom";
 import useProducts from '../hooks/use-products';
 import useProductCategories from '../hooks/use-product-categories';
+import useCart from '@/hooks/use-cart';
 
 
 const ProductList: React.FC = () => {
@@ -31,7 +32,12 @@ const ProductList: React.FC = () => {
     const [categories,isCategoriesLoading,isCategoriesError] = useProductCategories()
     const [nameFilter, setNameFilter] = useState<string>("");
     const [categoryFilter, setCategoryFilter] = useState<number>(0);
+    const {addItem} = useCart()
  
+
+    if((products == null)||(categories==null)){
+        return 
+    }
 
     if ((isCategoriesLoading)||(isProductsLoading)) {
         return <div>Loading...</div>;
@@ -108,7 +114,10 @@ const ProductList: React.FC = () => {
                             <TableCell>{categories[product.CategoryId-1].name}</TableCell>
                             <TableCell>
                             <Button variant="outline" size="icon" onClick={() => {
-                                    console.log(product)
+                                    addItem({
+                                        product:product,
+                                        quantity:1
+                                    })
                                 }}>
                                 <ShoppingBasket />
                             </Button>
