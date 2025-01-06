@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useParams} from "react-router-dom";
 import {Product, UpdateProduct} from "../types/product-type"
 import useProductCategories from "@/hooks/use-product-categories.ts";
-import {fetchProduct, updateProduct} from "@/lookup";
+import {fetchGroqDescription, fetchProduct, updateProduct} from "@/lookup";
 import {useForm} from "react-hook-form";
 import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -13,6 +13,7 @@ import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/
 import {Button} from "@/components/ui/button.tsx";
 import {Textarea} from "@/components/ui/textarea.tsx";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select.tsx";
+import {Bot} from "lucide-react";
 
 const EditProductForm: React.FC = () => {
     const { id } = useParams<{id: string}>();
@@ -96,6 +97,18 @@ const EditProductForm: React.FC = () => {
     }
 
 
+    function getGroqDescription() {
+        fetchGroqDescription(id as string).then(
+            (result) =>{
+                if(result.status >= 400){
+                    setError(result.body.error.message[0]);
+                }else{
+                    form.reset({...product, description: result.body.data})
+                }
+            }
+        )
+    }
+
     return (
         <div>
             <Card>
@@ -129,7 +142,13 @@ const EditProductForm: React.FC = () => {
                                         control={form.control}
                                         render={({field}) => (
                                             <FormItem>
-                                                <FormLabel>Description</FormLabel>
+                                                <div className="flex gap-6">
+                                                    <FormLabel>Description</FormLabel>
+                                                        <Button className="h-5 border-r-0" onClick={() => getGroqDescription()}>
+                                                            <Bot></Bot> groq for suggestion <Bot></Bot>
+                                                        </Button>
+                                                </div>
+
                                                 <FormControl>
                                                     <Textarea placeholder="Description" {...field} />
                                                 </FormControl>
@@ -184,7 +203,8 @@ const EditProductForm: React.FC = () => {
                                                             <SelectItem value="0" disabled>Select a
                                                                 category</SelectItem>
                                                             {categories.map((category) => (
-                                                                <SelectItem key={category.id} value={category.id.toString()}>
+                                                                <SelectItem key={category.id}
+                                                                            value={category.id.toString()}>
                                                                     {category.name}
                                                                 </SelectItem>
                                                             ))}
