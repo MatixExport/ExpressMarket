@@ -1,3 +1,4 @@
+import ShopCartItem from "@/types/shop-cart-item";
 import { fetchBackendLookup,tokenFetchBackendLookup } from "./backend-lookup";
 import {UpdateProduct} from "@/types/product-type.ts";
 
@@ -57,4 +58,20 @@ export const updateProduct = async (product: UpdateProduct) =>{
     const {id, ...data} = {...product}
     const endpoint:string = `/products/${id}`;
     return await tokenFetchBackendLookup("PUT",endpoint, data);
+}
+
+export const makeOrder = async (items:ShopCartItem[])=>{
+    const endpoint:string = "/orders"
+    const mappedItems = items.map((cartItem)=>{
+        return {
+            ProductId:cartItem.product.id,
+            quantity:cartItem.quantity
+        }
+    })
+    return await tokenFetchBackendLookup("POST",endpoint,
+        {
+            Products:mappedItems
+        }
+        
+    )
 }

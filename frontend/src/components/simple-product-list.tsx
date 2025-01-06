@@ -50,7 +50,7 @@ const SimpleProductList: React.FC<SimpleProductListProps> = ({items}) => {
                             {item.product.name}
                         </TableCell>
                         <TableCell>
-                            {item.product.price}
+                            {item.product.price}$
                         </TableCell>
                         <TableCell>
                             {item.quantity}
