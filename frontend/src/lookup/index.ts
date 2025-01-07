@@ -1,6 +1,7 @@
 import ShopCartItem from "@/types/shop-cart-item";
 import { fetchBackendLookup,tokenFetchBackendLookup } from "./backend-lookup";
-import {UpdateProduct} from "@/types/product-type.ts";
+import {InitProduct, UpdateProduct} from "@/types/product-type.ts";
+import { InitDataType } from "@/types/init-data-schema";
 
 
 export const requestLogin = async(login:string,password:string)=>{
@@ -79,4 +80,9 @@ export const makeOrder = async (items:ShopCartItem[])=>{
 export const fetchUserOrders = async ()=>{
     const endpoint:string = "/orders/user"
     return await tokenFetchBackendLookup("GET",endpoint)
+}
+
+export const addBulkProducts = async (data : InitDataType)=>{
+    const endpoint:string = "/init"
+    return await tokenFetchBackendLookup("POST",endpoint,data)
 }

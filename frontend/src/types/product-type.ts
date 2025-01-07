@@ -18,3 +18,11 @@ export interface UpdateProduct {
     CategoryId: number;
 }
 
+export interface InitProduct {
+    name: string;
+    description: string;
+    price: number;
+    weight: number;
+    CategoryId: number;
+}
+

@@ -1,4 +1,4 @@
-import { z, ZodType } from "zod"; // Add new import
+import { z, ZodType } from "zod";
 
 export type LoginFormData = {
     login: string;

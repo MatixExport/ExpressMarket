@@ -6,7 +6,7 @@ import {fetchGroqDescription, fetchProduct, updateProduct} from "@/lookup";
 import {useForm} from "react-hook-form";
 import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
-import UpdateProductSchema from "@/types/update-product-schema.ts";
+import ProductSchema from "@/types/product-schema";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import FormFieldRender from "@/components/form-field-render.tsx";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form.tsx";
@@ -45,8 +45,8 @@ const EditProductForm: React.FC = () => {
         )
     }, []);
 
-    const form = useForm<z.infer<typeof UpdateProductSchema>>({
-        resolver: zodResolver(UpdateProductSchema),
+    const form = useForm<z.infer<typeof ProductSchema>>({
+        resolver: zodResolver(ProductSchema),
         reValidateMode: "onChange",
         defaultValues: {...product},
     })
@@ -58,7 +58,7 @@ const EditProductForm: React.FC = () => {
     }, [product, form.reset]);
 
 
-    const onSubmit = async (values: z.infer<typeof UpdateProductSchema>) => {
+    const onSubmit = async (values: z.infer<typeof ProductSchema>) => {
         setError(null);
         setMessage(null);
 

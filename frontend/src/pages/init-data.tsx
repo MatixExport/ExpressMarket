@@ -1,0 +1,98 @@
+import LoginForm from "@/components/login-form"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {InitDataType } from "@/types/init-data-schema";
+import InitSchema from "@/types/init-data-schema";
+import { Label } from "@radix-ui/react-label";
+import { useState } from "react";
+import { z, ZodType } from "zod";
+import { addBulkProducts } from "@/lookup";
+import { Response } from "@/types/response-type";
+import ErrorMessage from "@/types/error-message";
+import { useNavigate } from "react-router-dom";
+
+
+const InitData =()=> {
+    const [initData, setInitData] = useState<InitDataType>()
+    const [errors,setErrors] = useState<string[]>([])
+    const [isLoading,setIsLoading] = useState<boolean>(true)
+    const navigate = useNavigate()
+
+    const handleChange = (event:React.ChangeEvent<HTMLInputElement>) =>{
+        setIsLoading(true)
+        if(event.target.files){
+            const files = Array.from(event.target.files)
+            console.log(files)
+            const file = files[0]
+            if(file.type != "application/json"){
+                setErrors(["File must be of type JSON"])
+                return
+            }
+            file.text().then(
+                (value)=>{
+                    try {
+                        const parsedJson = JSON.parse(value)
+                        const parsedInitData = InitSchema.parse(parsedJson);
+                        setInitData(parsedInitData)
+                        setIsLoading(false)
+                      } catch (error) {
+                          if (error instanceof z.ZodError) {
+                            setErrors(
+                                error.issues.map((value)=>{
+                                    return `${value.path} ${value.message}`
+                                })
+                            )
+                          } else {
+                            setErrors(["Unable to parse to json"]);
+                        }
+                        return
+                      }
+                }
+            )
+        }
+      }
+
+    const handleSubmit = () =>{
+        if(!initData){
+            return
+        }
+        setIsLoading(true)
+        addBulkProducts(initData).then((response : Response)=>{
+            if(response.status >= 400){
+                setErrors(
+                    response.body.error.message.map((error:ErrorMessage)=>{
+                        `${error.field}: ${error.message}`
+                    })
+                )
+                
+            }
+            else{
+                setIsLoading(false)
+                navigate("/")
+            }
+
+        })
+        
+    }
+
+  return (
+    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+      <div className="w-full max-w-sm">
+        {errors.map((error)=>(
+            <p className="text-red-600 mb-2">
+                {error}
+            </p>
+        ))}
+         <div className="grid w-full max-w-sm items-center gap-1.5">
+            <Label htmlFor="picture">Init products</Label>
+            <Input id="picture" type="file" onChange={handleChange} />
+            <Button disabled={((errors.length > 0) || (isLoading))} onClick={(_)=>handleSubmit()}>
+                Upload initial products
+            </Button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default InitData
