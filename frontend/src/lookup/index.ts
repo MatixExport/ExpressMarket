@@ -11,12 +11,13 @@ export const requestLogin = async(login:string,password:string)=>{
     })
 }
 
-export const register = async(login:string,password:string,email:string)=>{
+export const register = async(login:string,password:string,email:string,phone:string)=>{
     const endpoint:string = "/auth/register";
     return await fetchBackendLookup("POST",endpoint,{
         login:login,
         password:password,
-        email:email
+        email:email,
+        phone:phone
     })
 
 }

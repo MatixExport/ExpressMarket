@@ -12,7 +12,6 @@ import { Badge } from "@/components/ui/badge"
 const AccountDetails = ()=>{
 
     const {user} = useAuth()
-    console.log(user)
     if(!user){
         return "Unauthenticated"
     }
@@ -33,6 +32,11 @@ const AccountDetails = ()=>{
         <div className="flex items-center justify-between">
           <span className="text-white-600">Email:</span>
           <span className="font-medium text-white-900">{user.email}</span>
+        </div>
+
+        <div className="flex items-center justify-between">
+          <span className="text-white-600">Phone:</span>
+          <span className="font-medium text-white-900">{user.phone}</span>
         </div>
 
         <div className="flex items-center justify-between">

@@ -13,6 +13,7 @@ import {requestLogin} from "@/lookup";
 import useAuth from "@/hooks/use-auth";
 import {useState} from "react";
 import {Label} from "@/components/ui/label";
+import { Link } from "react-router-dom";
 
 
 const LoginForm = ({
@@ -37,8 +38,7 @@ const LoginForm = ({
     requestLogin(values.login,values.password).then((res)=>{
       console.log(res.status)
       if(res.status >= 400){
-        console.log("Server-side validation error")
-        setGlobalError("Invalid username or password")
+        setGlobalError(res.body.error.message[0].message)
       }else{
         console.log(res.body.data)
         login(res.body.data)
@@ -99,9 +99,9 @@ const LoginForm = ({
             </div>
             <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{" "}
-              <a href="#" className="underline underline-offset-4">
+              <Link to="/auth/register" className="underline underline-offset-4">
                 Sign up
-              </a>
+              </Link>
             </div>
             </form>
           </Form>

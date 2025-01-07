@@ -13,6 +13,7 @@ import AccountDetails from "./pages/account-details.tsx";
 import ShopCartProvider from "./providers/shop-cart-provider.tsx";
 import Checkout from "./pages/checkout.tsx";
 import ClientOrderList from "./pages/client-order-list.tsx";
+import RegisterForm from "./pages/register-form.tsx";
 
 const App: React.FC = () => {
     return (
@@ -34,6 +35,7 @@ const App: React.FC = () => {
                     </Route>
                     <Route element={<UnauthenticatedOnlyRoute/>}>
                         <Route path="/auth/login" element={<LoginForm/>}/>
+                        <Route path="/auth/register" element={<RegisterForm/>}/>
                     </Route>
                     {/*<Route path="/about" element={<About />} />*/}
                     {/*<Route path="*" element={<NotFound />} />*/}
