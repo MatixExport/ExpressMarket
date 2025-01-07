@@ -25,6 +25,8 @@ import {Link} from "react-router-dom";
 import useProducts from '../hooks/use-products';
 import useProductCategories from '../hooks/use-product-categories';
 import useCart from '@/hooks/use-cart';
+import useAuth from '@/hooks/use-auth';
+import { UserRole } from '@/types/user-type';
 
 
 const ProductList: React.FC = () => {
@@ -32,6 +34,7 @@ const ProductList: React.FC = () => {
     const [categories,isCategoriesLoading,isCategoriesError] = useProductCategories()
     const [nameFilter, setNameFilter] = useState<string>("");
     const [categoryFilter, setCategoryFilter] = useState<number>(0);
+    const {user} = useAuth()
     const {addItem} = useCart()
  
 
@@ -91,7 +94,7 @@ const ProductList: React.FC = () => {
                     <TableHead>Weight</TableHead>
                     <TableHead>Category</TableHead>
                     <TableHead>Buy</TableHead>
-                    <TableHead>Edit</TableHead>
+                    {(user && user.role == UserRole.EMPLOYEE) && (<TableHead>Edit</TableHead>)}
                 </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -122,14 +125,16 @@ const ProductList: React.FC = () => {
                                 <ShoppingBasket />
                             </Button>
                             </TableCell>
+                            {(user && user.role == UserRole.EMPLOYEE) && 
+                            (
                             <TableCell>
-                           
                                 <Link to={`/editProduct/${product.id}`} className="btn btn-primary">
                                     <Button variant="outline" size="icon">
                                         <PenBox />
                                     </Button>
                                 </Link>
                             </TableCell>
+                           )}
                         </TableRow>
                     ))}
                 </TableBody>

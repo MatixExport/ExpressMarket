@@ -13,8 +13,9 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({allowedRoles}) => {
     if (!token) {
         return (<Navigate to="/error/unautenticated" />);
     }
-    //currently user roles will not be available at this time
-    //in order to fix this, user could be saved in localStorage
+    if(user && allowedRoles && !allowedRoles.includes(user.role)){
+        return (<Navigate to="/error/unauthorized" />);
+      }
     // if((allowedRoles)&&(!allowedRoles.includes(user.role))){
     //     return (<Navigate to="/error/unauthorized" />);
     // }

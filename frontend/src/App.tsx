@@ -16,6 +16,7 @@ import RestrictedNavbarOverlay from "./components/restricted-navbar-overlay.tsx"
 import LoginPage from "./pages/login-page.tsx";
 import RegisterPage from "./pages/register-page.tsx";
 import InitData from "./pages/init-data.tsx";
+import { UserRole } from "./types/user-type.ts";
 
 const App: React.FC = () => {
     return (
@@ -26,11 +27,13 @@ const App: React.FC = () => {
                 <RestrictedNavbarOverlay>
                 <Routes>
                     <Route path="/" element={<ProductList></ProductList>} />
-                    <Route path="/editProduct/:id" element={<CreateProductForm />} />
                     <Route path="/checkout" element={<Checkout />} />
-                    <Route path="/products/init" element={<InitData />} />
                     <Route path="/error/unautenticated" element={<Unautenticated />} />
                     <Route path="/error/unauthorized" element={<Unauthorized />} />
+                    <Route element={<ProtectedRoute allowedRoles={[UserRole.EMPLOYEE]} />}>
+                        <Route path="/products/init" element={<InitData />} />
+                        <Route path="/editProduct/:id" element={<CreateProductForm />} />
+                    </Route>
                     <Route element={<ProtectedRoute/>}>
                         <Route path="/orders/user" element={<ClientOrderList />} />
                         <Route path="/test/unauth" element={<CreateProductForm/>}/>

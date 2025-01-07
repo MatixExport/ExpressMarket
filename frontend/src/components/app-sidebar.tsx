@@ -1,8 +1,10 @@
 import * as React from "react"
 import {
-  Bot,
+  ShoppingBasket,
   GalleryVerticalEnd,
   SquareTerminal,
+  FileInputIcon,
+
 } from "lucide-react"
 
 
@@ -26,28 +28,32 @@ import {
 import SignInButton from "./sign-in-button"
 import useAuth from "@/hooks/use-auth"
 import { Link } from "react-router-dom"
-import ShoppingCart from "./shop-cart"
+import { NavProjects } from "./nav-projects"
+import { UserRole } from "@/types/user-type"
 
 const data = {
   navMain: [
     {
       title: "Products",
       url: "/",
-      icon: SquareTerminal,
+      icon: ShoppingBasket,
       isActive: true,
       items: [
       
       ],
     },
-    {
-      title: "Checkout",
-      url: "/checkout",
-      icon: Bot,
-      items: [
-   
-      ],
-    },
   ],
+  navAdmin : [
+    {
+      title: "Init products",
+      url: "/products/init",
+      icon: FileInputIcon,
+      isActive: true,
+      items: [
+      
+      ],
+    }
+  ]
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -77,7 +83,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain title="Pages" items={data.navMain} />
+        {(user && user.role == UserRole.EMPLOYEE) && (
+           <NavMain title="Admin Pages" items={data.navAdmin} />
+        ) }
       </SidebarContent>
       <SidebarFooter>
         {user ? (

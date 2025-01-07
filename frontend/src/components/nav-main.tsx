@@ -17,7 +17,9 @@ import {
 
 export function NavMain({
   items,
+  title
 }: {
+  title:string
   items: {
     title: string
     url: string
@@ -31,7 +33,7 @@ export function NavMain({
 }) {
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Pages</SidebarGroupLabel>
+      <SidebarGroupLabel>{title}</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
           <Link key={item.url} to={item.url}>
