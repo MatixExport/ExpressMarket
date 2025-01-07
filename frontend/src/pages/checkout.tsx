@@ -59,6 +59,16 @@ const Checkout = ()=>{
         removeItem(cartItem)
     }
 
+    if(items.length == 0){
+        return (
+            <div className="container mx-auto py-10">
+                <h2>
+                    Your shopping cart is currently empty!
+                </h2>
+            </div>
+        )
+    }
+
   return (
     <div className="container mx-auto py-10">
         <Button disabled={isLoading} onClick={(e)=>{handleMakerOrder()}} className="mb-4">

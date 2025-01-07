@@ -6,7 +6,7 @@ import {Form, FormField,} from "@/components/ui/form"
 
 import {useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
-import FormFieldRender from "../components/form-field-render"
+import FormFieldRender from "./form-field-render"
 import {z} from "zod"
 import { register } from "@/lookup";
 import ErrorMessage from "@/types/error-message";

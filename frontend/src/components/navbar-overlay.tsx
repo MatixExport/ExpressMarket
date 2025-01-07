@@ -18,8 +18,16 @@ import { ModeToggle } from "@/components/mode-toggle"
 import useAuth from "@/hooks/use-auth"
 import { Link } from "react-router-dom"
 import ShoppingCart from "./shop-cart"
+import { ReactNode } from "react"
 
-export default function NavbarOverlay({children}:any) {
+
+interface NavbarOverlayProps{
+  children:ReactNode,
+}
+
+
+const NavbarOverlay : React.FC<NavbarOverlayProps> =  ({children})=> {
+
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -61,3 +69,5 @@ export default function NavbarOverlay({children}:any) {
     </SidebarProvider>
   )
 }
+
+export default NavbarOverlay

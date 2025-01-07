@@ -8,12 +8,13 @@ import NavbarOverlay from "./components/navbar-overlay.tsx";
 import Unautenticated from "./pages/Unauthenticated.tsx";
 import Unauthorized from "./pages/Unauthorized.tsx";
 import UnauthenticatedOnlyRoute from "./routes/unauthenticated-only-route.tsx";
-import LoginForm from "./pages/login-form.tsx";
 import AccountDetails from "./pages/account-details.tsx";
 import ShopCartProvider from "./providers/shop-cart-provider.tsx";
 import Checkout from "./pages/checkout.tsx";
 import ClientOrderList from "./pages/client-order-list.tsx";
-import RegisterForm from "./pages/register-form.tsx";
+import RestrictedNavbarOverlay from "./components/restricted-navbar-overlay.tsx";
+import LoginPage from "./pages/login-page.tsx";
+import RegisterPage from "./pages/register-page.tsx";
 
 const App: React.FC = () => {
     return (
@@ -21,7 +22,7 @@ const App: React.FC = () => {
                 <AuthProvider>
                 <ThemeProvider>
                 <ShopCartProvider>
-                <NavbarOverlay>
+                <RestrictedNavbarOverlay>
                 <Routes>
                     <Route path="/" element={<ProductList></ProductList>} />
                     <Route path="/editProduct/:id" element={<CreateProductForm />} />
@@ -34,18 +35,17 @@ const App: React.FC = () => {
                         <Route path="/account" element={<AccountDetails/>}/>
                     </Route>
                     <Route element={<UnauthenticatedOnlyRoute/>}>
-                        <Route path="/auth/login" element={<LoginForm/>}/>
-                        <Route path="/auth/register" element={<RegisterForm/>}/>
+                        <Route path="/auth/login" element={<LoginPage/>}/>
+                        <Route path="/auth/register" element={<RegisterPage/>}/>
                     </Route>
                     {/*<Route path="/about" element={<About />} />*/}
                     {/*<Route path="*" element={<NotFound />} />*/}
                 </Routes>
-                </NavbarOverlay>
+                </RestrictedNavbarOverlay>
                 </ShopCartProvider>
                 </ThemeProvider>
                 </AuthProvider>
             </BrowserRouter>
-        
     );
 }
 
