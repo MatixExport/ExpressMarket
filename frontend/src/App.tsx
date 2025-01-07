@@ -12,6 +12,7 @@ import LoginForm from "./pages/login-form.tsx";
 import AccountDetails from "./pages/account-details.tsx";
 import ShopCartProvider from "./providers/shop-cart-provider.tsx";
 import Checkout from "./pages/checkout.tsx";
+import ClientOrderList from "./pages/client-order-list.tsx";
 
 const App: React.FC = () => {
     return (
@@ -27,6 +28,7 @@ const App: React.FC = () => {
                     <Route path="/error/unautenticated" element={<Unautenticated />} />
                     <Route path="/error/unauthorized" element={<Unauthorized />} />
                     <Route element={<ProtectedRoute/>}>
+                        <Route path="/orders/user" element={<ClientOrderList />} />
                         <Route path="/test/unauth" element={<CreateProductForm/>}/>
                         <Route path="/account" element={<AccountDetails/>}/>
                     </Route>

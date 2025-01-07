@@ -39,6 +39,7 @@ const Checkout = ()=>{
             }else{
                 console.log("order success")
                 clearCart()
+                navigate("/orders/user")
             }
             setIsLoading(false)
         })

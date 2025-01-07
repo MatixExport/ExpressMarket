@@ -75,3 +75,7 @@ export const makeOrder = async (items:ShopCartItem[])=>{
         
     )
 }
+export const fetchUserOrders = async ()=>{
+    const endpoint:string = "/orders/user"
+    return await tokenFetchBackendLookup("GET",endpoint)
+}
