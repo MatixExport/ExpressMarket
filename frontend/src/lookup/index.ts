@@ -2,6 +2,8 @@ import ShopCartItem from "@/types/shop-cart-item";
 import { fetchBackendLookup,tokenFetchBackendLookup } from "./backend-lookup";
 import {InitProduct, UpdateProduct} from "@/types/product-type.ts";
 import { InitDataType } from "@/types/init-data-schema";
+import { Order, OrderReview } from "@/types/order-type";
+import { CreateOrderReview } from "@/types/order-review-schema";
 
 
 export const requestLogin = async(login:string,password:string)=>{
@@ -85,4 +87,26 @@ export const fetchUserOrders = async ()=>{
 export const addBulkProducts = async (data : InitDataType)=>{
     const endpoint:string = "/init"
     return await tokenFetchBackendLookup("POST",endpoint,data)
+}
+
+export const cancelOrder = async (id:number)=>{
+    const endpoint:string = `/orders/${id}/cancel`
+    return await tokenFetchBackendLookup("POST",endpoint)
+}
+
+export const confirmOrder = async (id:number)=>{
+    const endpoint:string = `/orders/${id}/confirm`
+    return await tokenFetchBackendLookup("POST",endpoint)
+}
+
+export const updateOrderStatus = async (id:number,orderStatusId:number)=>{
+    const endpoint:string = `/orders/${id}`
+    return await tokenFetchBackendLookup("PUT",endpoint,{
+        OrderStatusId:orderStatusId
+    })
+}
+
+export const addOrderReview = async (id:number,review:CreateOrderReview)=>{
+    const endpoint:string = `/orders/${id}/review`
+    return await tokenFetchBackendLookup("POST",endpoint,review)
 }

@@ -13,6 +13,8 @@ export enum OrderStatus {
 
 export interface OrderReview{
     id: number;
+    rating:number;
+    review:string;
     createdAt: string;
     updatedAt: string;
 }

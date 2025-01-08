@@ -4,6 +4,7 @@ import {
   GalleryVerticalEnd,
   SquareTerminal,
   FileInputIcon,
+  C
 
 } from "lucide-react"
 

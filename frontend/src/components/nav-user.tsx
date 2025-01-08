@@ -4,6 +4,7 @@ import {
   BadgeCheck,
   ChevronsUpDown,
   LogOut,
+  ListChecks
 } from "lucide-react"
 
 import {
@@ -85,6 +86,13 @@ export function NavUser({
                 Account
               </DropdownMenuItem>
               </Link>
+              <Link to="/orders/user">
+              <DropdownMenuItem>
+                <ListChecks />
+                Your orders
+              </DropdownMenuItem>
+              </Link>
+              
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={(e)=>{if(onLogout) onLogout()}}>

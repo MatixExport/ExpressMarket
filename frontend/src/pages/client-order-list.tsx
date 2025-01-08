@@ -1,41 +1,80 @@
-import React, {useState } from 'react';
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-  } from "@/components/ui/table"
-import useUserOrders from '@/hooks/use-user-orders';
-import { OrderStatus } from '@/types/order-type';
+import React, {useEffect, useState } from 'react';
 
+import { Order, OrderProduct, OrderReview, OrderStatus } from '@/types/order-type';
+import UserOrder from '@/components/user-order';
+import { fetchUserOrders } from '@/lookup';
+import { Response } from '@/types/response-type';
+import { confirmOrder,cancelOrder } from '@/lookup';
 
 
 const ClientOrderList: React.FC = () => {
-    const [orders,isOrdersLoading,isOrdersError] = useUserOrders()
+    const [orders,setOrders] = useState<Order[]>([])
+    const [isLoading,setIsLoading] = useState<boolean>(true)
  
-    if((isOrdersLoading)||(isOrdersError)){
-        return (<p>Loading</p>)
+    useEffect(()=>{
+        setIsLoading(true)
+        fetchUserOrders().then((response:Response)=>{
+            if(response.status >= 400){
+
+            }else{
+                setOrders(response.body.data)
+            }
+            setIsLoading(false)
+        })
+    },[])
+
+    const handleCancelOrder = (id:number)=>{
+        const newOrders = orders.map((order)=>{
+            if(order.id === id){
+                order.OrderStatusId = OrderStatus.CANCELED
+            }
+            return order
+        })
+        setOrders(newOrders)
+        cancelOrder(id)
+
     }
 
-    return (
-        <div className="container mt-5 mx-8">
-            <div className='w-1/2 mx-*'>
-                {orders?.map((order)=>(
-                    <div>
+    const handleAddReview = (id:number,review:OrderReview)=>{
+        setOrders(orders.map((order:Order)=>{
+            if(order.id === id){
+                order.OrderReview = review
+            }
+            return order
+        }))
+    }
 
-                        <p>
-                            {order.id}
-                        </p>
-                        <p>
-                            {OrderStatus[order.OrderStatusId].toLowerCase()}
-                        </p>
-                    </div>
-                ))}
-            </div>
+    const handleConfirmOrder = (id:number)=>{
+        const newOrders = orders.map((order)=>{
+            if(order.id === id){
+                order.OrderStatusId = OrderStatus.COMPLETED
+            }
+            return order
+        })
+        setOrders(newOrders)
+        confirmOrder(id)
+
+    }
+
+    if(!orders || isLoading){
+        return("Loading")
+    }
+
+
+    return (
+        <div className="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            {
+                orders.map((order)=>(
+                    <UserOrder
+                    order={order}
+                    onAddReview={(review:OrderReview)=>{handleAddReview(order.id,review)}}
+                    onCancel={()=>{handleCancelOrder(order.id)}}
+                    onConfirm={()=>handleConfirmOrder(order.id)}
+                    />
+                ))
+            }
         </div>
-    );
+      );
 };
 
 export default ClientOrderList;
