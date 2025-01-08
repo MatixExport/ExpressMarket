@@ -45,12 +45,10 @@ const SetOrderStatusDialog:React.FC<SetOrderStatusDialogProps> = ({
     }
 
 
-    console.log(Object.keys(OrderStatus))
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="h-6 w-6" variant="outline">
+        <Button className="h-8 w-4" variant="outline">
             <PenBox/>
         </Button>
       </DialogTrigger>
