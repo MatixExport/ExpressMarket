@@ -20,6 +20,7 @@ const InitData =()=> {
 
     const handleChange = (event:React.ChangeEvent<HTMLInputElement>) =>{
         setIsLoading(true)
+        setErrors([])
         if(event.target.files){
             const files = Array.from(event.target.files)
             console.log(files)
@@ -76,19 +77,20 @@ const InitData =()=> {
     }
 
   return (
-    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+    <div className="flex w-full items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm">
-        {errors.map((error)=>(
-            <p className="text-red-600 mb-2">
-                {error}
-            </p>
-        ))}
+      
          <div className="grid w-full max-w-sm items-center gap-1.5">
             <Label htmlFor="picture">Init products</Label>
             <Input id="picture" type="file" onChange={handleChange} />
             <Button disabled={((errors.length > 0) || (isLoading))} onClick={(_)=>handleSubmit()}>
                 Upload initial products
             </Button>
+            {errors.map((error)=>(
+            <p className="text-red-600 mb-2 mt-4">
+                {error}
+            </p>
+        ))}
         </div>
       </div>
     </div>

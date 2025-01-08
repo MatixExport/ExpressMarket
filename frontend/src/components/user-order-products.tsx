@@ -23,12 +23,12 @@ const UserOrderProducts: React.FC<UserOrderProductsProps> = ({products}
 
 
     return (
- <Collapsible className="group/collapsible">
-         <CollapsibleTrigger className='flex'>
+ <Collapsible className="group/collapsible transition-all">
+         <CollapsibleTrigger className='flex '>
             <ChevronRightSquare className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
             <span>Products</span>
          </CollapsibleTrigger>
-         <CollapsibleContent>
+         <CollapsibleContent className="CollapsibleContent">
          <div className="flex justify-center">
              <div className="w-10/12 max-h-56 overflow-y-auto">
                             <ul className="space-y-2 mt-2 flex flex-col justify-center bg-secondary rounded-lg justify-between p-3 border w-full">

@@ -110,3 +110,8 @@ export const addOrderReview = async (id:number,review:CreateOrderReview)=>{
     const endpoint:string = `/orders/${id}/review`
     return await tokenFetchBackendLookup("POST",endpoint,review)
 }
+
+export const getOrders = async ()=>{
+    const endpoint:string = `/orders`
+    return await tokenFetchBackendLookup("GET",endpoint)
+}

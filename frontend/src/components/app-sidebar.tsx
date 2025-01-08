@@ -4,7 +4,7 @@ import {
   GalleryVerticalEnd,
   SquareTerminal,
   FileInputIcon,
-  C
+  Truck
 
 } from "lucide-react"
 
@@ -51,9 +51,16 @@ const data = {
       icon: FileInputIcon,
       isActive: true,
       items: [
-      
       ],
-    }
+    },
+    {
+      title: "Orders",
+      url: "/orders/admin",
+      icon: Truck,
+      isActive: true,
+      items: [
+      ],
+    },
   ]
 }
 

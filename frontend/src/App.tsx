@@ -17,6 +17,7 @@ import LoginPage from "./pages/login-page.tsx";
 import RegisterPage from "./pages/register-page.tsx";
 import InitData from "./pages/init-data.tsx";
 import { UserRole } from "./types/user-type.ts";
+import AdminOrderList from "./pages/admin-order-list.tsx";
 
 const App: React.FC = () => {
     return (
@@ -33,6 +34,7 @@ const App: React.FC = () => {
                     <Route element={<ProtectedRoute allowedRoles={[UserRole.EMPLOYEE]} />}>
                         <Route path="/products/init" element={<InitData />} />
                         <Route path="/editProduct/:id" element={<CreateProductForm />} />
+                        <Route path="/orders/admin" element={<AdminOrderList />} />
                     </Route>
                     <Route element={<ProtectedRoute/>}>
                         <Route path="/orders/user" element={<ClientOrderList />} />

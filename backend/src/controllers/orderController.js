@@ -132,7 +132,7 @@ const addOrderReview = async(req,res,next)=>{
 }
 
 const getAllOrders = async (req, res, next)=>{
-    return res.success(await Order.findAll());
+    return res.success(await Order.findAll({include:[Product,OrderReview,OrderStatus]}));
  } 
 
 module.exports = {getOrdersByUserId,getAllOrders,createOrder,updateOrder,addOrderReview,getUserOrders,
