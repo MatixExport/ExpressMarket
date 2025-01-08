@@ -4,16 +4,18 @@ import { Input } from "@/components/ui/input";
 import {InitDataType } from "@/types/init-data-schema";
 import InitSchema from "@/types/init-data-schema";
 import { Label } from "@radix-ui/react-label";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { z, ZodType } from "zod";
 import { addBulkProducts } from "@/lookup";
 import { Response } from "@/types/response-type";
 import ErrorMessage from "@/types/error-message";
 import { useNavigate } from "react-router-dom";
+import ConfirmDialog from "@/components/confirm-dialog";
 
 
 const InitData =()=> {
     const [initData, setInitData] = useState<InitDataType>()
+    const filename = useRef("")
     const [errors,setErrors] = useState<string[]>([])
     const [isLoading,setIsLoading] = useState<boolean>(true)
     const navigate = useNavigate()
@@ -23,8 +25,8 @@ const InitData =()=> {
         setErrors([])
         if(event.target.files){
             const files = Array.from(event.target.files)
-            console.log(files)
             const file = files[0]
+            filename.current = file.name
             if(file.type != "application/json"){
                 setErrors(["File must be of type JSON"])
                 return
@@ -60,10 +62,12 @@ const InitData =()=> {
         setIsLoading(true)
         addBulkProducts(initData).then((response : Response)=>{
             if(response.status >= 400){
+                console.log(response.body.error.message)
                 setErrors(
-                    response.body.error.message.map((error:ErrorMessage)=>{
+                    response.body.error.message.map((error:ErrorMessage)=>
                         `${error.field}: ${error.message}`
-                    })
+                    )
+               
                 )
                 
             }
@@ -83,9 +87,16 @@ const InitData =()=> {
          <div className="grid w-full max-w-sm items-center gap-1.5">
             <Label htmlFor="picture">Init products</Label>
             <Input id="picture" type="file" onChange={handleChange} />
-            <Button disabled={((errors.length > 0) || (isLoading))} onClick={(_)=>handleSubmit()}>
-                Upload initial products
-            </Button>
+            <ConfirmDialog
+                title="Product Initalization"
+                text={`Are you sure you want to initialize database with the content of  ${filename.current}`}
+                onConfirm={()=>{handleSubmit()}}
+            >
+                <Button disabled={((errors.length > 0) || (isLoading))}>
+                    Upload initial products
+                </Button>
+            </ConfirmDialog>
+           
             {errors.map((error)=>(
             <p className="text-red-600 mb-2 mt-4">
                 {error}

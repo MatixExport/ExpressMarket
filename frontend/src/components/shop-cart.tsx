@@ -38,7 +38,7 @@ const ShoppingCart = ()=> {
             <span className="sr-only">Shop cart</span>
         </Button>
     </HoverCardTrigger>
-        <HoverCardContent className="max-h-64 overflow-auto">
+        <HoverCardContent className="max-h-80 overflow-auto">
             <SimpleProductList items={items} />
         </HoverCardContent>
     </HoverCard>

@@ -101,6 +101,7 @@ const AdminOrderList: React.FC = () => {
                 <TableRow>
                     <TableHead>Id</TableHead>
                     <TableHead>Status</TableHead>
+                    <TableHead>Confirm Date</TableHead>
                     <TableHead>User Id</TableHead>
                     <TableHead>Products</TableHead>
                     <TableHead>Review</TableHead>
@@ -127,6 +128,9 @@ const AdminOrderList: React.FC = () => {
                                     onDialogSubmit={(statusId:number)=>{handleChangeOrderStatus(order.id,statusId)}}
                                 />
                            
+                            </TableCell>
+                            <TableCell>
+                                {order.confirmDate ? new Date(order.confirmDate).toLocaleString() : "Not confirmed"}
                             </TableCell>
                             <TableCell>
                                 {order.UserId}

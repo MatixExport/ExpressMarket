@@ -48,6 +48,7 @@ const ClientOrderList: React.FC = () => {
         const newOrders = orders.map((order)=>{
             if(order.id === id){
                 order.OrderStatusId = OrderStatus.COMPLETED
+                order.confirmDate = new Date().toISOString();
             }
             return order
         })

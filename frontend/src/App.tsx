@@ -18,7 +18,7 @@ import RegisterPage from "./pages/register-page.tsx";
 import InitData from "./pages/init-data.tsx";
 import { UserRole } from "./types/user-type.ts";
 import AdminOrderList from "./pages/admin-order-list.tsx";
-
+import NotFound from "./pages/not-found.tsx";
 const App: React.FC = () => {
     return (
             <BrowserRouter>
@@ -45,8 +45,7 @@ const App: React.FC = () => {
                         <Route path="/auth/login" element={<LoginPage/>}/>
                         <Route path="/auth/register" element={<RegisterPage/>}/>
                     </Route>
-                    {/*<Route path="/about" element={<About />} />*/}
-                    {/*<Route path="*" element={<NotFound />} />*/}
+                    <Route path="*" element={<NotFound />} />
                 </Routes>
                 </RestrictedNavbarOverlay>
                 </ShopCartProvider>

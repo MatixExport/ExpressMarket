@@ -8,7 +8,7 @@ interface RestrictedNavbarOverlayProps{
   children:ReactNode,
 }
 
-const disabledPaths = ['/auth/login','/auth/register']
+const disabledPaths = ['/auth/login','/auth/register','/error/unauthorized']
 
 const RestrictedNavbarOverlay : React.FC<RestrictedNavbarOverlayProps> =  ({children})=> {
 

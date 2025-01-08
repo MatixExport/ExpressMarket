@@ -7,6 +7,7 @@ import {
 import { TokenPair } from "../types/token-pair-type";
 import { fetchUserData } from "../lookup";
 import { User } from "../types/user-type";
+import { useNavigate } from "react-router-dom";
 
 interface AuthContextValue {
   user: User | null; 
@@ -26,7 +27,7 @@ export const AuthContext = createContext<AuthContextValue>({
 const AuthProvider = ({ children }:any) => {
   const [user,setUser] = useState(null)
   const [token,setToken] = useState(localStorage.getItem('refresh'))
-
+  const navigate = useNavigate()
   const setUserData = ()=>{
     fetchUserData().then((response)=>{
       if(response.status < 400){
@@ -36,6 +37,8 @@ const AuthProvider = ({ children }:any) => {
       }
     })
   }
+
+
 
   const login = (authData:TokenPair)=>{
     localStorage.setItem("access",authData.access);
@@ -52,36 +55,11 @@ const AuthProvider = ({ children }:any) => {
     setUser(null)
   }
 
-  // const getValidAccessToken = async ()=>{
-  //   let accessToken = localStorage.getItem("access");
-  //   const refreshToken = localStorage.getItem("refresh");
-  //   if((accessToken === null)||(refreshToken === null)){
-  //     throw new Error("Token Invalid")
-  //   }
-  //   if(isExpired(accessToken)){
-  //     const renewalResponse = await refreshAccessToken(refreshToken);
-  //     if(renewalResponse.status >= 500){
-  //       throw new Error("Token Invalid")
-  //     }
-  //     accessToken = renewalResponse.body.data.access
-  //     if(accessToken === null){
-  //       throw new Error("Token Invalid")
-  //     }
-  //     localStorage.setItem("access",accessToken)
-  //   }
-  //   return accessToken
-  // }
 
   useEffect(()=>{
-    // getValidAccessToken()
-    // .then((access)=>{
-    //   localStorage.setItem("access",access)
-    //   setUserData()
-    // })
-    // .catch((error)=>{
-    //   logout()
-    // })
-    setUserData()
+    if(token){
+      setUserData()
+    }
   },[])
 
   const contextValue = useMemo(

@@ -18,6 +18,7 @@ import ShopCartItem from "@/types/shop-cart-item"
 import { makeOrder } from "@/lookup"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
+import ConfirmDialog from "@/components/confirm-dialog"
 
 const Checkout = ()=>{
     const {items,setItems,addItem,removeItem,setItemQuantity,clearCart} = useCart()
@@ -47,7 +48,7 @@ const Checkout = ()=>{
 
     const handleQuantityChange = (product:Product,newQuantity:number)=>{
         const quantity:number = Math.floor(newQuantity)
-        if(quantity){
+        if(quantity&&quantity>0){
             setItemQuantity({
                 product:product,
                 quantity:quantity
@@ -71,9 +72,15 @@ const Checkout = ()=>{
 
   return (
     <div className="container mx-auto py-10">
-        <Button disabled={isLoading} onClick={(e)=>{handleMakerOrder()}} className="mb-4">
+        <ConfirmDialog
+        title="Confirm order"
+        text="After confirmation you will need to wait for the order approval."
+        onConfirm={()=>{handleMakerOrder()}}
+        >
+        <Button disabled={isLoading} className="mb-4">
             Make Order
         </Button>
+        </ConfirmDialog>
         {(error.length > 0) ? (
             <p>
                 {error}
