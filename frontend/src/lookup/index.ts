@@ -64,6 +64,12 @@ export const updateProduct = async (product: UpdateProduct) =>{
     return await tokenFetchBackendLookup("PUT",endpoint, data);
 }
 
+export const addProduct = async (product: UpdateProduct) =>{
+    const {id, ...data} = {...product}
+    const endpoint:string = `/products`;
+    return await tokenFetchBackendLookup("POST",endpoint, data);
+}
+
 export const makeOrder = async (items:ShopCartItem[])=>{
     const endpoint:string = "/orders"
     const mappedItems = items.map((cartItem)=>{

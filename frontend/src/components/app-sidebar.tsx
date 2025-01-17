@@ -3,6 +3,7 @@ import {
   ShoppingBasket,
   GalleryVerticalEnd,
   SquareTerminal,
+  PlusCircle,
   FileInputIcon,
   Truck
 
@@ -61,9 +62,18 @@ const data = {
       items: [
       ],
     },
+    {
+      title: "Add product",
+      url: "/products/add",
+      icon: PlusCircle,
+      isActive: true,
+      items: [
+      ],
+    },
+    
   ]
 }
-
+// /products/add
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const {user,login,logout} = useAuth()
 

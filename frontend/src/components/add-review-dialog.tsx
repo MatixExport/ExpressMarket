@@ -54,7 +54,7 @@ const AddReviewDialog:React.FC<AddReviewDialogProps> = ({
                 if(msg.field == "global"){
                     setGlobalError(msg.message)
                 }else{
-                    //set zod errors
+                    form.setError(msg.field, {type:"server",message: msg.message})
                 }
             })
         }else{

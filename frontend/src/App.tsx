@@ -19,6 +19,7 @@ import InitData from "./pages/init-data.tsx";
 import { UserRole } from "./types/user-type.ts";
 import AdminOrderList from "./pages/admin-order-list.tsx";
 import NotFound from "./pages/not-found.tsx";
+import AddProductForm from "./pages/add-product-form.tsx";
 const App: React.FC = () => {
     return (
             <BrowserRouter>
@@ -33,6 +34,7 @@ const App: React.FC = () => {
                     <Route path="/error/unauthorized" element={<Unauthorized />} />
                     <Route element={<ProtectedRoute allowedRoles={[UserRole.EMPLOYEE]} />}>
                         <Route path="/products/init" element={<InitData />} />
+                        <Route path="/products/add" element={<AddProductForm />} />
                         <Route path="/editProduct/:id" element={<CreateProductForm />} />
                         <Route path="/orders/admin" element={<AdminOrderList />} />
                     </Route>

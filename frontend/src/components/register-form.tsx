@@ -42,8 +42,9 @@ const RegisterForm = ({
             if(errorMessage.field == "global"){
                 setGlobalError(errorMessage.message)
                 return
+            }else{
+              form.setError(errorMessage.field, {type:"server",message: errorMessage.message})
             }
-            //set zod's errors
         })
 
       }else{
@@ -140,7 +141,7 @@ const RegisterForm = ({
                 />
               </div>
               <Button type="submit" className="w-full">
-                Login
+                Register
               </Button>
               <Label className="text-red-900 font-bold" >
                 {globalError ? globalError : ""}
