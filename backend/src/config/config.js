@@ -10,7 +10,7 @@ const config = {
         "storage": "data.sqlite3"
       },
     "SECRET":"gebirtimordechaj",
-    "GROQ_AUTH":"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"
+    "GROQ_AUTH":""
 }
 
 module.exports = config
