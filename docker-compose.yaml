@@ -1,6 +1,21 @@
-version: '3.9'
-
 services:
+
+  backend:
+    build: /backend
+    ports: 
+      - "3000:3000"
+    environment:
+      - PG_HOST=postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    
+  frontend:
+    build: /frontend
+    ports:
+      - "5173:5173"
+
   postgres:
     image: postgres:14-alpine
     ports:
@@ -9,3 +24,8 @@ services:
       - POSTGRES_PASSWORD=admin
       - POSTGRES_USER=admin
       - POSTGRES_DB=market
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5

@@ -22,8 +22,8 @@ async function init() {
     await Product.create({name:"P1",description:"P1 DESC",price:12.2,weight:5,CategoryId:1});
     await Product.create({name:"P2",description:"P2 DESC",price:15.2,weight:10.1,CategoryId:1});
 
-    await User.create({login:"jan",password:await hashPassword("niestety"),email:"jan@wp.pl",phone:"712345674",role:"client"});
-    await User.create({login:"root",password:await hashPassword("niestety"),email:"jan@wp.pl",phone:"712345674",role:"employee"});
+    await User.create({login:"client",password:await hashPassword("MarketPassword"),email:"jan@wp.pl",phone:"712345674",role:"client"});
+    await User.create({login:"employee",password:await hashPassword("MarketPassword"),email:"jan@wp.pl",phone:"712345674",role:"employee"});
     
     await Order.create({confirmDate:null,OrderStatusId:1,UserId:1});
     await OrderUnit.create({OrderId:1,ProductId:1,quantity:1});

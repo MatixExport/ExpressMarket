@@ -13,6 +13,10 @@ const config = {
     "GROQ_AUTH":""
 }
 
+if(process.env.PG_HOST){
+    config['PG_HOST'] = process.env.PG_HOST
+  }
+
 module.exports = config
 
 
