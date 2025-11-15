@@ -1,14 +1,15 @@
-
 import {
-Table,
-TableBody,
-TableHead,
-TableHeader,
-TableRow,
+    Table,
+    TableBody,
+    TableHead,
+    TableHeader,
+    TableRow,
+    TableFooter,
+    TableCell,
+
 } from "@/components/ui/table"
-
-
-
+import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "@/components/ui/card"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 import { useNavigate } from "react-router-dom"
 import useAuth from "@/hooks/use-auth"
 import useCart from "@/hooks/use-cart"
@@ -16,99 +17,136 @@ import CheckoutItem from "@/components/checkout-item"
 import { Product } from "@/types/product-type"
 import ShopCartItem from "@/types/shop-cart-item"
 import { makeOrder } from "@/lookup"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import ConfirmDialog from "@/components/confirm-dialog"
+import { Loader2, AlertCircle, ShoppingCart } from "lucide-react"
 
-const Checkout = ()=>{
-    const {items,setItems,addItem,removeItem,setItemQuantity,clearCart} = useCart()
-    const [error,setError] = useState("")
-    const [isLoading,setIsLoading] = useState(false)
-    const {user} = useAuth()
+const Checkout = () => {
+    const { items, setItemQuantity, removeItem, clearCart } = useCart()
+    const [error, setError] = useState("")
+    const [isLoading, setIsLoading] = useState(false)
+    const { user } = useAuth()
     const navigate = useNavigate()
 
+    const totalPrice = useMemo(() => {
+        return items.reduce((total, item) => total + item.product.price * item.quantity, 0);
+    }, [items]);
 
-    const handleMakerOrder = ()=>{
-        if(!user){
+    const handleMakeOrder = () => {
+        if (!user) {
             navigate("/auth/login")
+            return;
         }
         setError("")
         setIsLoading(true)
-        makeOrder(items).then((response)=>{
-            if(response.status >= 400){
+        makeOrder(items).then((response) => {
+            if (response.status >= 400) {
                 setError(response.body.error.message[0].message)
-            }else{
-                console.log("order success")
+            } else {
                 clearCart()
                 navigate("/orders/user")
             }
+        }).finally(() => {
             setIsLoading(false)
-        })
+        });
     }
 
-    const handleQuantityChange = (product:Product,newQuantity:number)=>{
-        const quantity:number = Math.floor(newQuantity)
-        if(quantity&&quantity>0){
+    const handleQuantityChange = (product: Product, newQuantity: number) => {
+        const quantity: number = Math.floor(newQuantity)
+        if (quantity && quantity > 0) {
             setItemQuantity({
-                product:product,
-                quantity:quantity
+                product: product,
+                quantity: quantity
             })
         }
     }
 
-    const handleRemoveItem = (cartItem:ShopCartItem)=>{
+    const handleRemoveItem = (cartItem: ShopCartItem) => {
         removeItem(cartItem)
     }
 
-    if(items.length == 0){
+    if (items.length === 0) {
         return (
-            <div className="container mx-auto py-10">
-                <h2>
-                    Your shopping cart is currently empty!
-                </h2>
+            <div className="container mx-auto py-10 flex justify-center">
+                <Card className="w-full max-w-lg text-center">
+                    <CardHeader>
+                        <CardTitle>Your Cart is Empty</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <ShoppingCart className="mx-auto h-16 w-16 text-muted-foreground" />
+                        <p className="mt-4 text-muted-foreground">Looks like you haven't added anything to your cart yet.</p>
+                    </CardContent>
+                    <CardFooter>
+                        <Button className="w-full" onClick={() => navigate('/')}>
+                            Start Shopping
+                        </Button>
+                    </CardFooter>
+                </Card>
             </div>
         )
     }
 
-  return (
-    <div className="container mx-auto py-10">
-        <ConfirmDialog
-        title="Confirm order"
-        text="After confirmation you will need to wait for the order approval."
-        onConfirm={()=>{handleMakerOrder()}}
-        >
-        <Button disabled={isLoading} className="mb-4">
-            Make Order
-        </Button>
-        </ConfirmDialog>
-        {(error.length > 0) ? (
-            <p>
-                {error}
-            </p>
-        ) : ""}
-        <Table className="table table-bordered">
-        <TableHeader className="thead-dark">
-        <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Description</TableHead>
-            <TableHead>Price</TableHead>
-            <TableHead>Weight</TableHead>
-            <TableHead>Quantity</TableHead>
-            <TableHead>Remove</TableHead>
-        </TableRow>
-        </TableHeader>
-        <TableBody>
-         {items.map((cartItem) => (
-                           <CheckoutItem
-                                cartItem={cartItem}
-                                onQuantityChange={(quantity)=>{handleQuantityChange(cartItem.product,quantity)}}
-                                onItemRemove={()=>{handleRemoveItem(cartItem)}}
-                           />
-                    ))}
-                    </TableBody>
-                    </Table>
-  </div>
-  )
+    return (
+        <div className="container mx-auto py-10">
+            <Card>
+                <CardHeader>
+                    <CardTitle>Shopping Cart</CardTitle>
+                    <CardDescription>Review the items in your cart before proceeding to order.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    {error && (
+                        <Alert variant="destructive" className="mb-4">
+                            <AlertCircle className="h-4 w-4" />
+                            <AlertDescription>{error}</AlertDescription>
+                        </Alert>
+                    )}
+                    <div className="overflow-x-auto">
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Name</TableHead>
+                                    <TableHead>Description</TableHead>
+                                    <TableHead className="text-right">Price</TableHead>
+                                    <TableHead className="text-right">Weight</TableHead>
+                                    <TableHead className="text-center">Quantity</TableHead>
+                                    <TableHead className="text-center">Remove</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {items.map((cartItem) => (
+                                    <CheckoutItem
+                                        key={cartItem.product.id}
+                                        cartItem={cartItem}
+                                        onQuantityChange={(quantity) => { handleQuantityChange(cartItem.product, quantity) }}
+                                        onItemRemove={() => { handleRemoveItem(cartItem) }}
+                                    />
+                                ))}
+                            </TableBody>
+                            <TableFooter>
+                                <TableRow>
+                                    <TableCell colSpan={5} className="text-right font-bold">Total</TableCell>
+                                    <TableCell className="text-right font-bold">${totalPrice.toFixed(2)}</TableCell>
+                                </TableRow>
+                            </TableFooter>
+                        </Table>
+                    </div>
+                </CardContent>
+                <CardFooter className="flex justify-end">
+                    <ConfirmDialog
+                        title="Confirm Order"
+                        text="After confirmation, you will need to wait for the order approval."
+                        onConfirm={handleMakeOrder}
+                    >
+                        <Button disabled={isLoading}>
+                            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                            Make Order
+                        </Button>
+                    </ConfirmDialog>
+                </CardFooter>
+            </Card>
+        </div>
+    )
 }
 
 export default Checkout;

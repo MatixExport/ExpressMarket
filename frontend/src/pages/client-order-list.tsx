@@ -1,81 +1,117 @@
-import React, {useEffect, useState } from 'react';
-
-import { Order, OrderProduct, OrderReview, OrderStatus } from '@/types/order-type';
+import React, { useEffect, useState } from 'react';
+import { Order, OrderReview, OrderStatus } from '@/types/order-type';
 import UserOrder from '@/components/user-order';
-import { fetchUserOrders } from '@/lookup';
+import { fetchUserOrders, confirmOrder, cancelOrder } from '@/lookup';
 import { Response } from '@/types/response-type';
-import { confirmOrder,cancelOrder } from '@/lookup';
-
+import { Skeleton } from '@/components/ui/skeleton';
+import {Card, CardContent, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { ShoppingCart } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const ClientOrderList: React.FC = () => {
-    const [orders,setOrders] = useState<Order[]>([])
-    const [isLoading,setIsLoading] = useState<boolean>(true)
- 
-    useEffect(()=>{
-        setIsLoading(true)
-        fetchUserOrders().then((response:Response)=>{
-            if(response.status >= 400){
+    const [orders, setOrders] = useState<Order[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const navigate = useNavigate();
 
-            }else{
-                setOrders(response.body.data)
+    useEffect(() => {
+        setIsLoading(true);
+        fetchUserOrders().then((response: Response) => {
+            if (response.status < 400) {
+                setOrders(response.body.data);
             }
-            setIsLoading(false)
-        })
-    },[])
+        }).finally(() => {
+            setIsLoading(false);
+        });
+    }, []);
 
-    const handleCancelOrder = (id:number)=>{
-        const newOrders = orders.map((order)=>{
-            if(order.id === id){
-                order.OrderStatusId = OrderStatus.CANCELED
-            }
-            return order
-        })
-        setOrders(newOrders)
-        cancelOrder(id)
+    const handleCancelOrder = (id: number) => {
+        cancelOrder(id).then(() => {
+            setOrders(prevOrders => prevOrders.map(order =>
+                order.id === id ? { ...order, OrderStatusId: OrderStatus.CANCELED } : order
+            ));
+        });
+    };
 
+    const handleAddReview = (id: number, review: OrderReview) => {
+        setOrders(prevOrders => prevOrders.map(order =>
+            order.id === id ? { ...order, OrderReview: review } : order
+        ));
+    };
+
+    const handleConfirmOrder = (id: number) => {
+        confirmOrder(id).then(() => {
+            setOrders(prevOrders => prevOrders.map(order =>
+                order.id === id ? { ...order, OrderStatusId: OrderStatus.COMPLETED, confirmDate: new Date().toISOString() } : order
+            ));
+        });
+    };
+
+    if (isLoading) {
+        return (
+            <div className="container mx-auto p-4">
+                <div className="space-y-2 mb-6">
+                    <h1 className="text-3xl font-bold tracking-tight">Your Orders</h1>
+                    <p className="text-muted-foreground">Loading your order history...</p>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {Array.from({ length: 3 }).map((_, index) => (
+                        <Card key={index}>
+                            <CardHeader>
+                                <Skeleton className="h-6 w-3/4" />
+                                <Skeleton className="h-4 w-1/2" />
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                                <Skeleton className="h-20 w-full" />
+                                <Skeleton className="h-10 w-full" />
+                            </CardContent>
+                            <CardFooter>
+                                <Skeleton className="h-10 w-24" />
+                            </CardFooter>
+                        </Card>
+                    ))}
+                </div>
+            </div>
+        );
     }
-
-    const handleAddReview = (id:number,review:OrderReview)=>{
-        setOrders(orders.map((order:Order)=>{
-            if(order.id === id){
-                order.OrderReview = review
-            }
-            return order
-        }))
-    }
-
-    const handleConfirmOrder = (id:number)=>{
-        const newOrders = orders.map((order)=>{
-            if(order.id === id){
-                order.OrderStatusId = OrderStatus.COMPLETED
-                order.confirmDate = new Date().toISOString();
-            }
-            return order
-        })
-        setOrders(newOrders)
-        confirmOrder(id)
-
-    }
-
-    if(!orders || isLoading){
-        return("Loading")
-    }
-
 
     return (
-        <div className="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-            {
-                orders.map((order)=>(
-                    <UserOrder
-                    order={order}
-                    onAddReview={(review:OrderReview)=>{handleAddReview(order.id,review)}}
-                    onCancel={()=>{handleCancelOrder(order.id)}}
-                    onConfirm={()=>handleConfirmOrder(order.id)}
-                    />
-                ))
-            }
+        <div className="container mx-auto p-4">
+            <div className="space-y-2 mb-6">
+                <h1 className="text-3xl font-bold tracking-tight">Your Orders</h1>
+                <p className="text-muted-foreground">Here is a list of all your past and current orders.</p>
+            </div>
+
+            {orders.length === 0 ? (
+                <Card className="w-full text-center">
+                    <CardHeader>
+                        <CardTitle>No Orders Found</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <ShoppingCart className="mx-auto h-16 w-16 text-muted-foreground" />
+                        <p className="mt-4 text-muted-foreground">You haven't placed any orders yet.</p>
+                    </CardContent>
+                    <CardFooter>
+                        <Button className="w-full" onClick={() => navigate('/')}>
+                            Start Shopping
+                        </Button>
+                    </CardFooter>
+                </Card>
+            ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {orders.map((order) => (
+                        <UserOrder
+                            key={order.id}
+                            order={order}
+                            onAddReview={(review: OrderReview) => { handleAddReview(order.id, review) }}
+                            onCancel={() => { handleCancelOrder(order.id) }}
+                            onConfirm={() => handleConfirmOrder(order.id)}
+                        />
+                    ))}
+                </div>
+            )}
         </div>
-      );
+    );
 };
 
 export default ClientOrderList;

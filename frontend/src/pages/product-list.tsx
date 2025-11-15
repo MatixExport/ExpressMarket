@@ -7,9 +7,9 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
-import { PenBox, ShoppingBasket,Plus } from "lucide-react"
+import { PenBox, ShoppingBasket } from "lucide-react"
 import {
     Select,
     SelectContent,
@@ -17,9 +17,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-
 import { Button } from '@/components/ui/button';
-
 import { Input } from "@/components/ui/input"
 import { Link } from "react-router-dom";
 import useProducts from '../hooks/use-products';
@@ -27,7 +25,7 @@ import useProductCategories from '../hooks/use-product-categories';
 import useCart from '@/hooks/use-cart';
 import useAuth from '@/hooks/use-auth';
 import { UserRole } from '@/types/user-type';
-
+import { Skeleton } from '@/components/ui/skeleton';
 
 const ProductList: React.FC = () => {
     const [products, isProductsLoading, isProductsError] = useProducts()
@@ -37,110 +35,119 @@ const ProductList: React.FC = () => {
     const { user } = useAuth()
     const { addItem } = useCart()
 
-
-    if ((products == null) || (categories == null)) {
-        return
+    if (isCategoriesLoading || isProductsLoading) {
+        return (
+            <div className="container mx-auto p-4 space-y-4">
+                <Skeleton className="h-32 w-full" />
+                <Skeleton className="h-96 w-full" />
+            </div>
+        )
     }
 
-    if ((isCategoriesLoading) || (isProductsLoading)) {
-        return <div>Loading...</div>;
+    if (isProductsError || isCategoriesError || !products || !categories) {
+        return <div className="container mx-auto p-4">Error loading products or categories.</div>;
     }
 
-    if ((isProductsError) || (isCategoriesError)) {
-        return <div>Error</div>;
-    }
+    const handleResetFilters = () => {
+        setCategoryFilter(0);
+        setNameFilter("");
+    };
+
+    const filteredProducts = products
+        .filter(product => product.name.toLowerCase().includes(nameFilter.toLowerCase()))
+        .filter(product => categoryFilter === 0 || product.CategoryId === categoryFilter);
 
     return (
-        <div className="container mt-5 mx-8">
-            <div className='w-1/2 mx-*'>
-                <Label htmlFor="nameFilter" className='mb-8'>Name Filter:</Label>
-                <Input id="nameFilter" className="form-control mb-3" onChange={(e) => setNameFilter(e.target.value)} />
+        <div className="container mx-auto p-4 flex flex-col gap-6">
+            <Card>
+                <CardHeader>
+                    <CardTitle>Filters</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="nameFilter">Name Filter:</Label>
+                            <Input id="nameFilter" value={nameFilter} placeholder="Filter by name..." onChange={(e) => setNameFilter(e.target.value)} />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="categoryFilter">Category Filter:</Label>
+                            <Select
+                                onValueChange={(value) => setCategoryFilter(Number(value))}
+                                value={categoryFilter.toString()}
+                                name="categoryFilter"
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select a category" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="0">All Categories</SelectItem>
+                                    {categories.map((category) => (
+                                        <SelectItem key={category.id} value={category.id.toString()}>
+                                            {category.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    </div>
+                </CardContent>
+                <CardFooter>
+                    <Button
+                        variant="outline"
+                        onClick={handleResetFilters}
+                    >
+                        Reset Filters
+                    </Button>
+                </CardFooter>
+            </Card>
 
-                <Label htmlFor="categoryFilter" className='mb-8'>Category Filter:</Label>
-                <Select
-                    onValueChange={(value) => setCategoryFilter(Number(value))}
-                    defaultValue={categoryFilter.toString()}
-                    name="categoryFilter"
-                >
-                    <SelectTrigger className="form-control mb-4">
-                        <SelectValue placeholder="Select a category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="0" disabled>Select a category</SelectItem>
-                        {categories.map((category) => (
-                            <SelectItem key={category.id} value={category.id.toString()}>
-                                {category.name}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
-
-                <Button
-                    className="btn btn-primary mb-3"
-                    onClick={() => { setCategoryFilter(0); setNameFilter("") }}
-                >
-                    Reset filters
-                </Button>
-            </div>
-
-
-
-            <Table className="table table-bordered">
-                <TableHeader className="thead-dark">
-                    <TableRow>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Description</TableHead>
-                        <TableHead>Price</TableHead>
-                        <TableHead>Weight</TableHead>
-                        <TableHead>Category</TableHead>
-                        <TableHead>Buy</TableHead>
-                        {(user && user.role == UserRole.EMPLOYEE) && (
-                                <TableHead>Edit</TableHead>
-                        )}
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {products
-                        .filter((product) => {
-                            return product.name.includes(nameFilter)
-                        })
-                        .filter((product) => {
-                            if (categoryFilter === 0) {
-                                return product;
-                            } else return product.CategoryId === categoryFilter;
-                        }
-                        )
-                        .map((product) => (
-                            <TableRow key={product.id}>
-                                <TableCell>{product.name}</TableCell>
-                                <TableCell>{product.description}</TableCell>
-                                <TableCell>{product.price}</TableCell>
-                                <TableCell>{product.weight}</TableCell>
-                                <TableCell>{categories[product.CategoryId - 1].name}</TableCell>
-                                <TableCell>
-                                    <Button variant="outline" size="icon" onClick={() => {
-                                        addItem({
-                                            product: product,
-                                            quantity: 1
-                                        })
-                                    }}>
-                                        <ShoppingBasket />
-                                    </Button>
-                                </TableCell>
-                                {(user && user.role == UserRole.EMPLOYEE) &&
-                                    (
-                                            <TableCell>
-                                                <Link to={`/editProduct/${product.id}`} className="btn btn-primary">
-                                                    <Button variant="outline" size="icon">
-                                                        <PenBox />
-                                                    </Button>
-                                                </Link>
-                                            </TableCell>
-                                    )}
+            <Card>
+                <CardHeader>
+                    <CardTitle>Products</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Name</TableHead>
+                                <TableHead>Description</TableHead>
+                                <TableHead className="text-right">Price</TableHead>
+                                <TableHead className="text-right">Weight</TableHead>
+                                <TableHead>Category</TableHead>
+                                <TableHead className="text-center">Buy</TableHead>
+                                {user?.role === UserRole.EMPLOYEE && (
+                                    <TableHead className="text-center">Edit</TableHead>
+                                )}
                             </TableRow>
-                        ))}
-                </TableBody>
-            </Table>
+                        </TableHeader>
+                        <TableBody>
+                            {filteredProducts.map((product) => (
+                                <TableRow key={product.id}>
+                                    <TableCell className="font-medium">{product.name}</TableCell>
+                                    <TableCell>{product.description}</TableCell>
+                                    <TableCell className="text-right">${Number(product.price).toFixed(2)}</TableCell>
+                                    <TableCell className="text-right">{product.weight}g</TableCell>
+                                    <TableCell>{categories.find(c => c.id === product.CategoryId)?.name || 'N/A'}</TableCell>
+                                    <TableCell className="text-center">
+                                        <Button variant="outline" size="icon" onClick={() => addItem({ product, quantity: 1 })}>
+                                            <ShoppingBasket className="h-4 w-4" />
+                                        </Button>
+                                    </TableCell>
+                                    {user?.role === UserRole.EMPLOYEE && (
+                                        <TableCell className="text-center">
+                                            <Link to={`/editProduct/${product.id}`}>
+                                                <Button variant="outline" size="icon">
+                                                    <PenBox className="h-4 w-4" />
+                                                </Button>
+                                            </Link>
+                                        </TableCell>
+                                    )}
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </CardContent>
+            </Card>
         </div>
     );
 };

@@ -1,189 +1,172 @@
-import React, {useState} from 'react';
-import {UpdateProduct} from "../types/product-type"
+import React, { useState } from 'react';
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { addProduct } from "@/lookup";
 import useProductCategories from "@/hooks/use-product-categories.ts";
-import {addProduct} from "@/lookup";
-import {useForm} from "react-hook-form";
-import {z} from "zod";
-import {zodResolver} from "@hookform/resolvers/zod";
 import ProductSchema from "@/types/product-schema";
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card.tsx";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card.tsx";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form.tsx";
 import FormFieldRender from "@/components/form-field-render.tsx";
-import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form.tsx";
-import {Button} from "@/components/ui/button.tsx";
-import {Textarea} from "@/components/ui/textarea.tsx";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select.tsx";
+import { Textarea } from "@/components/ui/textarea.tsx";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select.tsx";
+import { Button } from "@/components/ui/button.tsx";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert.tsx";
+import { Loader2, CheckCircle, AlertCircle } from "lucide-react";
+import { Skeleton } from '@/components/ui/skeleton';
 
 const AddProductForm: React.FC = () => {
-    const [categories,isCategoriesLoading,isCategoriesError] = useProductCategories()
-
-    const [product, setProduct] = useState<UpdateProduct>({
-        CategoryId: 0,
-        description: "",
-        id: 0,
-        name: "",
-        price: 0,
-        weight: 0
-    })
-
-    const [message, setMessage] = useState<string | null>(null);
-    const [error, setError] = useState<string | null>(null);
+    const [categories, isCategoriesLoading, isCategoriesError] = useProductCategories();
+    const [formMessage, setFormMessage] = useState<{ type: 'success' | 'error'; content: string } | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const form = useForm<z.infer<typeof ProductSchema>>({
         resolver: zodResolver(ProductSchema),
         reValidateMode: "onChange",
-        defaultValues: {...product},
-    })
+        defaultValues: {
+            name: "",
+            description: "",
+            price: 0,
+            weight: 0,
+            CategoryId: 0,
+        },
+    });
 
-   
     const onSubmit = async (values: z.infer<typeof ProductSchema>) => {
-        setError(null);
-        setMessage(null);
+        setIsSubmitting(true);
+        setFormMessage(null);
 
-        addProduct(values).then(
-            (result) =>{
-                if(result.status >= 400 ){
-                    const messages:[{message:string, field:string}] = result.body.error.message;
-                    messages.forEach(({field, message})=>{
-                        if(field === "global"){
-                            setError(message)
-                        }
-                        else {
-                            form.setError(field, {type:"server",message: message})
-                        }
-                    })
+        addProduct(values).then((result) => {
+            if (result.status >= 400) {
+                const messages: [{ message: string, field: string }] = result.body.error.message;
+                let globalError = '';
+                messages.forEach(({ field, message }) => {
+                    if (field === "global") {
+                        globalError += message + ' ';
+                    } else {
+                        form.setError(field as keyof z.infer<typeof ProductSchema>, { type: "server", message: message });
+                    }
+                });
+                if (globalError) {
+                    setFormMessage({ type: 'error', content: globalError.trim() });
                 }
-                else {
-                    setError(null);
-                    setMessage('Product uploaded successfully!');
-                }
+            } else {
+                setFormMessage({ type: 'success', content: 'Product added successfully!' });
+                form.reset();
             }
-        )
-
+        }).finally(() => {
+            setIsSubmitting(false);
+        });
     };
 
-    if(isCategoriesLoading){
-        return <div>Loading...</div>;
+    if (isCategoriesLoading) {
+        return (
+            <div className="container mx-auto p-4 flex justify-center">
+                <Card className="w-full max-w-2xl">
+                    <CardHeader>
+                        <Skeleton className="h-8 w-48" />
+                        <Skeleton className="h-4 w-full" />
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                        {Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-14 w-full" />)}
+                        <Skeleton className="h-10 w-full" />
+                    </CardContent>
+                </Card>
+            </div>
+        );
     }
 
-    if (error || isCategoriesError) {
-        return <div>Error: {error}</div>;
-    }
-
-    if (message){
-        return <div>{message}</div>;
+    if (isCategoriesError) {
+        return (
+            <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>Could not load product categories. Please try again later.</AlertDescription>
+            </Alert>
+        );
     }
 
     return (
-        <div>
-            <Card>
+        <div className="container mx-auto p-4 flex justify-center">
+            <Card className="w-full max-w-2xl">
                 <CardHeader>
-                    <CardTitle className="text-2xl">Add product</CardTitle>
-                    <CardDescription>
-                        Enter values for product
-                    </CardDescription>
+                    <CardTitle className="text-2xl">Add a New Product</CardTitle>
+                    <CardDescription>Fill out the form below to add a new product to the catalog.</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)}>
-                            <div className="flex flex-col gap-6">
-                                <div className="grid gap-2">
-                                    <FormField
-                                        name="name"
-                                        control={form.control}
-                                        render={({field}) => (
-                                            <FormFieldRender
-                                                label="Name"
-                                                type="text"
-                                                field={field}
-                                                placeholder="Name"
-                                            />
-                                        )}
-                                    />
-                                </div>
-                                <div className="grid gap-2">
-                                    <FormField
-                                        name="description"
-                                        control={form.control}
-                                        render={({field}) => (
-                                            <FormItem>
-                                                <div className="flex gap-6">
-                                                    <FormLabel>Description</FormLabel>
-                                                </div>
-
-                                                <FormControl>
-                                                    <Textarea placeholder="Description" {...field} />
-                                                </FormControl>
-                                                <FormMessage/>
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
-
-                                <div className="grid gap-2">
-                                    <FormField
-                                        name="price"
-                                        control={form.control}
-                                        render={({field}) => (
-                                            <FormFieldRender
-                                                label="Price"
-                                                type="number"
-                                                field={field}
-                                                placeholder="Price"
-                                            />
-                                        )}
-                                    />
-                                </div>
-                                <div className="grid gap-2">
-                                    <FormField
-                                        name="weight"
-                                        control={form.control}
-                                        render={({field}) => (
-                                            <FormFieldRender
-                                                label="Weight"
-                                                type="number"
-                                                field={field}
-                                                placeholder="Weight"
-                                            />
-                                        )}
-                                    />
-                                </div>
-                                <div className="grid gap-2">
-                                    <FormField
-                                        name="CategoryId"
-                                        control={form.control}
-                                        render={({field}) => (
-                                            <FormItem>
-                                                <FormLabel>Category</FormLabel>
-                                                <FormControl>
-                                                    {!isCategoriesLoading&&categories ? <Select onValueChange={field.onChange}
-                                                            defaultValue={field.value.toString()}>
-                                                        <SelectTrigger>
-                                                            <SelectValue placeholder="Category"/>
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            <SelectItem value="0" disabled>Select a
-                                                                category</SelectItem>
-                                                            {categories.map((category) => (
-                                                                <SelectItem key={category.id}
-                                                                            value={category.id.toString()}>
-                                                                    {category.name}
-                                                                </SelectItem>
-                                                            ))}
-                                                        </SelectContent>
-                                                    </Select> : "Loading"}
-                                                </FormControl>
-                                                <FormMessage/>
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
-
-
-                                <Button type="submit" className="w-full">
-                                    Add product
-                                </Button>
-
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                            {formMessage && (
+                                <Alert variant={formMessage.type === 'success' ? 'default' : 'destructive'}>
+                                    {formMessage.type === 'success' ? <CheckCircle className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
+                                    <AlertTitle>{formMessage.type === 'success' ? 'Success' : 'Error'}</AlertTitle>
+                                    <AlertDescription>{formMessage.content}</AlertDescription>
+                                </Alert>
+                            )}
+                            <FormField
+                                name="name"
+                                control={form.control}
+                                render={({ field }) => (
+                                    <FormFieldRender label="Name" type="text" field={field} placeholder="Product Name" />
+                                )}
+                            />
+                            <FormField
+                                name="description"
+                                control={form.control}
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Description</FormLabel>
+                                        <FormControl>
+                                            <Textarea placeholder="Detailed product description" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <FormField
+                                    name="price"
+                                    control={form.control}
+                                    render={({ field }) => (
+                                        <FormFieldRender label="Price ($)" type="number" field={field} placeholder="e.g., 19.99" />
+                                    )}
+                                />
+                                <FormField
+                                    name="weight"
+                                    control={form.control}
+                                    render={({ field }) => (
+                                        <FormFieldRender label="Weight (g)" type="number" field={field} placeholder="e.g., 500" />
+                                    )}
+                                />
                             </div>
+                            <FormField
+                                name="CategoryId"
+                                control={form.control}
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Category</FormLabel>
+                                        <Select onValueChange={(value) => field.onChange(Number(value))} defaultValue={field.value.toString()}>
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select a category" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {categories?.map((category) => (
+                                                    <SelectItem key={category.id} value={category.id.toString()}>
+                                                        {category.name}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <Button type="submit" className="w-full" disabled={isSubmitting}>
+                                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                Add Product
+                            </Button>
                         </form>
                     </Form>
                 </CardContent>

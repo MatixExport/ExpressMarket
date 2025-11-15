@@ -21,56 +21,53 @@ interface SimpleProductListProps{
 
 const SimpleProductList: React.FC<SimpleProductListProps> = ({items}) => {
 
-    const itemPriceSum = useMemo(()=>{
-        return items.reduce<number>((accumulator, item: ShopCartItem) => {
-            return accumulator + (item.quantity * item.product.price);
-          }, 0);
-      },[items])
+    const itemPriceSum = useMemo(() => {
+    return items.reduce<number>((accumulator, item: ShopCartItem) => {
+        return accumulator + (item.quantity * Number(item.product.price));
+    }, 0);
+}, [items])
 
 
-    return (
-        <Table>
-            <TableCaption>Your shop cart.</TableCaption>
-            <TableHeader>
-                <TableHead>
-                    Name
-                </TableHead>
-                <TableHead>
-                    Price
-                </TableHead>
-                <TableHead>
-                    Quantity
-                </TableHead>
-            </TableHeader>
-            <TableBody>
+return (
+    <Table>
+        <TableCaption>Your shop cart.</TableCaption>
+        <TableHeader>
+            <TableHead>
+                Name
+            </TableHead>
+            <TableHead className="text-right">
+                Price
+            </TableHead>
+            <TableHead className="text-center">
+                Quantity
+            </TableHead>
+        </TableHeader>
+        <TableBody>
             {
-                items.map((item)=>(
+                items.map((item) => (
                     <TableRow key={item.product.id}>
                         <TableCell>
                             {item.product.name}
                         </TableCell>
-                        <TableCell>
-                            {item.product.price}$
+                        <TableCell className="text-right">
+                            ${Number(item.product.price).toFixed(2)}
                         </TableCell>
-                        <TableCell>
+                        <TableCell className="text-center">
                             {item.quantity}
                         </TableCell>
                     </TableRow>
                 ))
 
             }
-            </TableBody>
-            <TableFooter>
-                <TableRow>
-                    <TableCell colSpan={2}>Total</TableCell>
-                    <TableCell className="text-right">{itemPriceSum.toFixed(2)}$</TableCell>
-                </TableRow>
-            </TableFooter>
-
-
-
-        </Table>
-    );
+        </TableBody>
+        <TableFooter>
+            <TableRow>
+                <TableCell colSpan={2} className="text-right font-bold">Total</TableCell>
+                <TableCell className="text-right font-bold">${itemPriceSum.toFixed(2)}</TableCell>
+            </TableRow>
+        </TableFooter>
+    </Table>
+);
 };
 
 export default SimpleProductList;
