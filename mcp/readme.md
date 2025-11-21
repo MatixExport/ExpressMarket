@@ -1,4 +1,4 @@
-This can be added to gemini cli with:
+This can be added to gemini cli (settings.json) with:
 ```
   "mcpServers": {
     "expressMarket": {
@@ -9,4 +9,5 @@ This can be added to gemini cli with:
     }
   }
 }
-```can 
+```
+

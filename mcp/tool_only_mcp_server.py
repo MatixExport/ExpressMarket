@@ -3,6 +3,7 @@ import functools
 from mcp.server.fastmcp import FastMCP, Context
 from fastapi import Header
 from typing import Annotated, List, Dict, Any, Optional
+import json
 
 # --- Configuration ---
 BASE_URL = "http://localhost:3000"
@@ -46,7 +47,7 @@ async def get_auth_headers(ctx: Context) -> Dict[str, str]:
     return headers
 
 
-@mcp.resource("users://whoami")
+@mcp.tool()
 @handle_request_errors
 async def get_current_user(ctx: Context) -> dict:
     """Get current user details."""
@@ -67,8 +68,8 @@ async def update_user(userId: int, ctx: Context, login: Optional[str] = None, pa
 
 # --- Products ---
 
-@mcp.resource("products://list")
-async def get_all_products(uri: str) -> str:
+@mcp.tool()
+async def get_all_products() -> str:
     """Get all products."""
     response = await make_request("GET", f"{BASE_URL}/products")
     return json.dumps(response, indent=2)
@@ -84,7 +85,7 @@ async def create_product(name: str, description: str, price: float, weight: floa
     return await make_request("POST", f"{BASE_URL}/products", headers=headers, json=json_data)
 
 
-@mcp.resource("products://{productId}")
+@mcp.tool()
 @handle_request_errors
 async def get_product_by_id(productId: int) -> dict:
     """Get a product by ID."""
@@ -101,7 +102,7 @@ async def update_product(productId: int, name: str, description: str, price: flo
     return await make_request("PUT", f"{BASE_URL}/products/{productId}", headers=headers, json=json_data)
 
 
-@mcp.resource("products://{productId}/seo-description")
+@mcp.tool()
 @handle_request_errors
 async def get_product_seo_description(productId: int) -> dict:
     """Get SEO description for a product."""
@@ -110,7 +111,7 @@ async def get_product_seo_description(productId: int) -> dict:
 
 # --- Orders ---
 
-@mcp.resource("orders://")
+@mcp.tool()
 @handle_request_errors
 async def get_all_orders(ctx: Context) -> dict:
     """
@@ -152,7 +153,7 @@ async def create_order(products: list[dict], ctx: Context) -> dict:
     )
 
 
-@mcp.resource("orders://user")
+@mcp.tool()
 @handle_request_errors
 async def get_user_orders(ctx: Context) -> dict:
     """Get orders for the current user."""
@@ -185,7 +186,7 @@ async def cancel_order(orderId: int, ctx: Context) -> dict:
     return await make_request("POST", f"{BASE_URL}/orders/{orderId}/cancel", headers=headers)
 
 
-@mcp.resource("orders://status/{statusId}")
+@mcp.tool()
 @handle_request_errors
 async def get_orders_by_status(statusId: int, ctx: Context) -> dict:
     """Get orders by status (employee only)."""
@@ -193,7 +194,7 @@ async def get_orders_by_status(statusId: int, ctx: Context) -> dict:
     return await make_request("GET", f"{BASE_URL}/orders/status/{statusId}", headers=headers)
 
 
-@mcp.resource("orders://login/{login}")
+@mcp.tool()
 @handle_request_errors
 async def get_orders_by_user_login(login: str, ctx: Context) -> dict:
     """Get orders by user login (employee only)."""
@@ -201,7 +202,7 @@ async def get_orders_by_user_login(login: str, ctx: Context) -> dict:
     return await make_request("GET", f"{BASE_URL}/orders/login/{login}", headers=headers)
 
 
-@mcp.resource("orders://{orderId}")
+@mcp.tool()
 @handle_request_errors
 async def get_order_by_id(orderId: int, ctx: Context) -> dict:
     """Get an order by ID."""
@@ -220,14 +221,14 @@ async def update_order(orderId: int, ctx: Context, OrderStatusId: Optional[int] 
 
 
 # --- Status & Categories ---
-@mcp.resource("status://")
+@mcp.tool()
 @handle_request_errors
 async def get_all_statuses() -> dict:
     """Get all possible order statuses."""
     return await make_request("GET", f"{BASE_URL}/status")
 
 
-@mcp.resource("categories://")
+@mcp.tool()
 @handle_request_errors
 async def get_all_categories() -> dict:
     """Get all product categories."""

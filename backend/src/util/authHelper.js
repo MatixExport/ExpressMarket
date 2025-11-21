@@ -18,12 +18,12 @@ const compareHash = async (password,hash)=>{
 
 
 function createAccessToken(payload) {
-    return jwt.sign(payload, config.SECRET, { expiresIn: 60 * 5});
+    return jwt.sign(payload, config.SECRET, { expiresIn: 60 * 60 * 2});
 }
 
 async function createRefreshToken(userId) {
     let expiryDate = new Date()
-    expiryDate.setSeconds(60 * 60 *2) 
+    expiryDate.setSeconds(60 * 60 * 24)
     const token = uuidv4() 
     const refreshToken = await RefreshToken.create({
         token:token,
