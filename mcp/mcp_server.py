@@ -70,7 +70,8 @@ async def update_user(userId: int, ctx: Context, login: Optional[str] = None, pa
 # --- Products ---
 
 @mcp.resource("products://list")
-async def get_all_products(uri: str) -> str:
+@handle_request_errors
+async def get_all_products() -> str:
     """Get all products."""
     response = await make_request("GET", f"{BASE_URL}/products")
     return json.dumps(response, indent=2)
